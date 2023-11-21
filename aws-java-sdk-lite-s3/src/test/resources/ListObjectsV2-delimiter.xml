@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>\n
+<ListBucketResult
+    xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+    <Name>humangraphics-382363607278-us-east-2</Name>
+    <Prefix>artifacts/</Prefix>
+    <KeyCount>9</KeyCount>
+    <MaxKeys>1000</MaxKeys>
+    <Delimiter>/</Delimiter>
+    <EncodingType>url</EncodingType>
+    <IsTruncated>false</IsTruncated>
+    <CommonPrefixes>
+        <Prefix>artifacts/backend-lambda-analyze-human-face-race/</Prefix>
+    </CommonPrefixes>
+    <CommonPrefixes>
+        <Prefix>artifacts/backend-lambda-analyze-human-name/</Prefix>
+    </CommonPrefixes>
+    <CommonPrefixes>
+        <Prefix>artifacts/backend-lambda-crop-human-face/</Prefix>
+    </CommonPrefixes>
+    <CommonPrefixes>
+        <Prefix>artifacts/backend-lambda-detect-human-faces/</Prefix>
+    </CommonPrefixes>
+    <CommonPrefixes>
+        <Prefix>artifacts/backend-lambda-layer/</Prefix>
+    </CommonPrefixes>
+    <CommonPrefixes>
+        <Prefix>artifacts/backend-lambda-multiparse-human-name/</Prefix>
+    </CommonPrefixes>
+    <CommonPrefixes>
+        <Prefix>artifacts/backend-lambda-parse-human-name/</Prefix>
+    </CommonPrefixes>
+    <CommonPrefixes>
+        <Prefix>artifacts/backend-lambda-ping/</Prefix>
+    </CommonPrefixes>
+    <CommonPrefixes>
+        <Prefix>artifacts/backend-lambda-resolve-location-name/</Prefix>
+    </CommonPrefixes>
+</ListBucketResult>
