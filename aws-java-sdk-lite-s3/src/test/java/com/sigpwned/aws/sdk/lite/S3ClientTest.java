@@ -1,11 +1,30 @@
+/*-
+ * =================================LICENSE_START==================================
+ * aws-java-sdk-lite-s3
+ * ====================================SECTION=====================================
+ * Copyright (C) 2023 Andy Boothe
+ * ====================================SECTION=====================================
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ==================================LICENSE_END===================================
+ */
 package com.sigpwned.aws.sdk.lite;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -24,6 +43,7 @@ import com.sigpwned.aws.sdk.lite.s3.exception.NoSuchKeyException;
 import com.sigpwned.aws.sdk.lite.s3.model.CommonPrefix;
 import com.sigpwned.aws.sdk.lite.s3.model.CreateBucketRequest;
 import com.sigpwned.aws.sdk.lite.s3.model.CreateBucketResponse;
+import com.sigpwned.aws.sdk.lite.s3.model.DeleteObjectRequest;
 import com.sigpwned.aws.sdk.lite.s3.model.GetObjectRequest;
 import com.sigpwned.aws.sdk.lite.s3.model.HeadBucketRequest;
 import com.sigpwned.aws.sdk.lite.s3.model.HeadObjectRequest;
@@ -276,6 +296,63 @@ public abstract class S3ClientTest {
     final String key = prefix + delimiter + "bravo.txt";
 
     unit.headObject(HeadObjectRequest.builder().bucket(bucketName).key(key).build());
+  }
+
+  @Test
+  public void deleteObjectExists() throws IOException {
+    final String bucketName = "example-bucket-name";
+    unit.createBucket(CreateBucketRequest.builder().bucket(bucketName).build());
+
+    final String delimiter = "/";
+    final String prefix = "alpha";
+    final String key = prefix + delimiter + "bravo.txt";
+    final byte[] putContents = key.getBytes(StandardCharsets.UTF_8);
+    unit.putObject(PutObjectRequest.builder().bucket(bucketName).key(key).build(),
+        RequestBody.fromBytes(putContents));
+
+    boolean existsBeforeDelete;
+    try {
+      unit.headObject(HeadObjectRequest.builder().bucket(bucketName).key(key).build());
+      existsBeforeDelete = true;
+    } catch (NoSuchKeyException e) {
+      existsBeforeDelete = false;
+    }
+
+    unit.deleteObject(DeleteObjectRequest.builder().bucket(bucketName).key(key).build());
+
+    boolean existsAfterDelete;
+    try {
+      unit.headObject(HeadObjectRequest.builder().bucket(bucketName).key(key).build());
+      existsAfterDelete = true;
+    } catch (NoSuchKeyException e) {
+      existsAfterDelete = false;
+    }
+
+    assertThat(existsBeforeDelete, is(true));
+    assertThat(existsAfterDelete, is(false));
+  }
+
+
+  @Test
+  public void deleteObjectNotExists() throws IOException {
+    final String bucketName = "example-bucket-name";
+    unit.createBucket(CreateBucketRequest.builder().bucket(bucketName).build());
+
+    final String delimiter = "/";
+    final String prefix = "alpha";
+    final String key = prefix + delimiter + "bravo.txt";
+
+    unit.deleteObject(DeleteObjectRequest.builder().bucket(bucketName).key(key).build());
+
+    boolean existsAfterDelete;
+    try {
+      unit.headObject(HeadObjectRequest.builder().bucket(bucketName).key(key).build());
+      existsAfterDelete = true;
+    } catch (NoSuchKeyException e) {
+      existsAfterDelete = false;
+    }
+
+    assertThat(existsAfterDelete, is(false));
   }
 
   protected abstract S3Client newClient(String endpoint, AwsCredentials credentials, String region);
