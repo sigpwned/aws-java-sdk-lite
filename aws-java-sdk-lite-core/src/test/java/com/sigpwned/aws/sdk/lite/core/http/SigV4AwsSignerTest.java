@@ -27,7 +27,8 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import org.junit.Test;
-import com.sigpwned.aws.sdk.lite.core.credentials.AwsSessionCredentials;
+import com.sigpwned.aws.sdk.lite.core.credentials.AwsBasicCredentials;
+import com.sigpwned.aws.sdk.lite.core.credentials.AwsCredentials;
 import com.sigpwned.httpmodel.core.io.NullInputStream;
 import com.sigpwned.httpmodel.core.model.ModelHttpHeaders;
 import com.sigpwned.httpmodel.core.model.ModelHttpHeaders.Header;
@@ -49,8 +50,8 @@ public class SigV4AwsSignerTest {
    */
   @Test
   public void test() throws IOException {
-    final AwsSessionCredentials credentials =
-        AwsSessionCredentials.of(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, null);
+    final AwsCredentials credentials =
+        AwsBasicCredentials.of(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY);
 
     final ModelHttpRequest request = ModelHttpRequest.builder().version("1.1").method("GET")
         .headers(new ModelHttpHeaders())
