@@ -1,5 +1,6 @@
 package com.sigpwned.aws.sdk.lite.s3.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +16,8 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(fluent = true, chain = true)
 public class Delete {
-  private List<ObjectIdentifier> objects;
+  @Builder.Default
+  private List<ObjectIdentifier> objects = new ArrayList<>();
   private Boolean quiet;
 
   public boolean hasObjects() {

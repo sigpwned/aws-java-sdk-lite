@@ -17,7 +17,9 @@ public class HeadObjectRequestMapper
     return requestType.equals(HeadObjectRequest.class);
   }
 
-  /* default */ static final String X_S3_BUCKET_HEADER_NAME = "x-s3-bucket";
+  /* default */ static final String X_S3_BUCKET_PROPERTY_NAME = "s3.bucket";
+
+  /* default */ static final String X_S3_KEY_PROPERTY_NAME = "s3.key";
 
 
   @Override
@@ -29,8 +31,9 @@ public class HeadObjectRequestMapper
             Optional.ofNullable(request.partNumber()).map(Object::toString).orElse(null))
         .setOnlyParameter("versionId",
             Optional.ofNullable(request.versionId()).map(Object::toString).orElse(null))
-        .done().appendPath(format("%s/%s", request.bucket(), request.key())).done().headers()
-        .setOnlyHeader(X_S3_BUCKET_HEADER_NAME, request.key())
+        .done().appendPath(format("%s/%s", request.bucket(), request.key())).done()
+        .property(X_S3_BUCKET_PROPERTY_NAME, request.bucket())
+        .property(X_S3_KEY_PROPERTY_NAME, request.key()).headers()
         .setOnlyHeader("If-Match",
             Optional.ofNullable(request.ifMatch()).map(Object::toString).orElse(null))
         .setOnlyHeader("If-Modified-Since",
@@ -53,6 +56,6 @@ public class HeadObjectRequestMapper
             Optional.ofNullable(request.expectedBucketOwner()).map(Object::toString).orElse(null))
         .setOnlyHeader("x-amz-checksum-mode",
             Optional.ofNullable(request.checksumMode()).map(Object::toString).orElse(null))
-        .done().properties(httpRequestHead.getProperties()).build().toRequest();
+        .done().build().toRequest();
   }
 }

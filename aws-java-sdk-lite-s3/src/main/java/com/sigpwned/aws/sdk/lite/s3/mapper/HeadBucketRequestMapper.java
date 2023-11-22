@@ -15,16 +15,15 @@ public class HeadBucketRequestMapper
     return requestType.equals(HeadBucketRequest.class);
   }
 
-  /* default */ static final String X_S3_BUCKET_HEADER_NAME = "x-s3-bucket";
+  /* default */ static final String X_S3_BUCKET_PROPERTY_NAME = "s3.bucket";
 
   @Override
   public ModelHttpRequest mapRequest(ModelHttpRequestHead httpRequestHead,
       HeadBucketRequest request) throws IOException {
     // We squirrel the bucket name away in a header so we can find it in the response mapper
     return httpRequestHead.toBuilder().method(ModelHttpMethods.HEAD).url()
-        .appendPath(request.bucket()).done().headers()
-        .setOnlyHeader("x-amz-expected-bucket-owner", request.expectedBucketOwner())
-        .setOnlyHeader(X_S3_BUCKET_HEADER_NAME, request.bucket()).done()
-        .properties(httpRequestHead.getProperties()).build().toRequest();
+        .appendPath(request.bucket()).done().property(X_S3_BUCKET_PROPERTY_NAME, request.bucket())
+        .headers().setOnlyHeader("x-amz-expected-bucket-owner", request.expectedBucketOwner())
+        .done().build().toRequest();
   }
 }

@@ -1,5 +1,6 @@
 package com.sigpwned.aws.sdk.lite.s3.model;
 
+import com.sigpwned.aws.sdk.lite.core.SdkRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +14,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Accessors(fluent = true, chain = true)
-public class CreateBucketRequest {
+public class CreateBucketRequest extends SdkRequest {
   private String acl;
   private String bucket;
   private CreateBucketConfiguration createBucketConfiguration;

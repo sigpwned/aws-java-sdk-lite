@@ -6,7 +6,8 @@ import com.sigpwned.aws.sdk.lite.core.AwsEndpoint;
 import com.sigpwned.aws.sdk.lite.core.SdkClientException;
 import com.sigpwned.aws.sdk.lite.core.credentials.provider.AwsCredentialsProvider;
 import com.sigpwned.aws.sdk.lite.core.http.AwsPropertiesHttpRequestFilter;
-import com.sigpwned.aws.sdk.lite.core.http.AwsSigningModelHttpRequestInterceptor;
+import com.sigpwned.aws.sdk.lite.core.http.AwsSigningHttpRequestInterceptor;
+import com.sigpwned.aws.sdk.lite.core.http.SdkResponseDecoratingBeanHttpResponseFilter;
 import com.sigpwned.aws.sdk.lite.core.http.SigV4AwsSigner;
 import com.sigpwned.aws.sdk.lite.core.util.AwsEndpoints;
 import com.sigpwned.httpmodel.core.client.bean.ModelHttpBeanClient;
@@ -27,8 +28,9 @@ public abstract class AwsClient implements AutoCloseable {
     this.serviceName = requireNonNull(serviceName);
 
     getClient().addRequestFilter(new AwsPropertiesHttpRequestFilter(getServiceName(), getRegion()));
+    getClient().addBeanResponseFilter(new SdkResponseDecoratingBeanHttpResponseFilter());
     getClient().addRequestInterceptor(
-        new AwsSigningModelHttpRequestInterceptor(new SigV4AwsSigner(credentialsProvider)));
+        new AwsSigningHttpRequestInterceptor(new SigV4AwsSigner(credentialsProvider)));
   }
 
   protected ModelHttpBeanClient getClient() {

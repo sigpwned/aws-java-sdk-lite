@@ -11,6 +11,7 @@ import com.sigpwned.httpmodel.core.io.InputStreamBufferingStrategy;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequestHead;
 import com.sigpwned.httpmodel.core.model.ModelHttpResponse;
 import com.sigpwned.httpmodel.core.model.ModelHttpResponseHead;
+import com.sigpwned.httpmodel.core.util.ModelHttpMethods;
 import com.sigpwned.httpmodel.core.util.ModelHttpStatusCodes;
 
 /**
@@ -42,6 +43,8 @@ public class NoSuchBucketExceptionMapper implements ModelHttpBeanClientException
   @Override
   public NoSuchBucketException mapException(ModelHttpRequestHead httpRequestHead,
       ModelHttpResponse httpResponse) throws IOException {
+    if (httpRequestHead.getMethod().equals(ModelHttpMethods.HEAD))
+      return null;
     if (httpResponse.getStatusCode() == ModelHttpStatusCodes.BAD_REQUEST
         || httpResponse.getStatusCode() == ModelHttpStatusCodes.NOT_FOUND) {
       httpResponse.buffer(InputStreamBufferingStrategy.MEMORY);

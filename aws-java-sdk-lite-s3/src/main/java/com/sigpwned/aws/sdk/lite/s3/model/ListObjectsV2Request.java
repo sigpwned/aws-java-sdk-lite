@@ -1,5 +1,6 @@
 package com.sigpwned.aws.sdk.lite.s3.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.sigpwned.aws.sdk.lite.core.SdkRequest;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,8 @@ public class ListObjectsV2Request extends SdkRequest {
   private String expectedBucketOwner;
   private Boolean fetchOwner;
   private Integer maxKeys;
-  private List<String> optionalObjectAttributes;
+  @Builder.Default
+  private List<String> optionalObjectAttributes = new ArrayList<>();
   private String prefix;
   private String requestPayer;
   private String startAfter;

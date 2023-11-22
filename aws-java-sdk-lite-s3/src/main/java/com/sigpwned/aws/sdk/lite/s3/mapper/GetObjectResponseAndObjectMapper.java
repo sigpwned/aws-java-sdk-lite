@@ -64,7 +64,7 @@ public class GetObjectResponseAndObjectMapper
         .lastModified(hs.findFirstHeaderByName("last-modified").map(Header::getValue)
             .map(s -> OffsetDateTime.parse(s, DateTimeFormatter.RFC_1123_DATE_TIME))
             .map(OffsetDateTime::toInstant).orElse(null))
-        .missingMeta(hs.findFirstHeaderByName("last-modified").map(Header::getValue)
+        .missingMeta(hs.findFirstHeaderByName("x-amz-missing-meta").map(Header::getValue)
             .map(Integer::valueOf).orElse(null))
         .objectLockLegalHoldStatus(hs.findFirstHeaderByName("x-amz-object-lock-legal-hold")
             .map(Header::getValue).map(String::valueOf).orElse(null))

@@ -102,10 +102,9 @@ public class PutObjectRequestAndObjectMapper
             .setOnlyHeader("x-amz-object-lock-legal-hold",
                 Optional.ofNullable(request.objectLockLegalHoldStatus()).map(Object::toString)
                     .orElse(null))
-            .setOnlyHeader("x-amz-expected-bucket-owner",
-                Optional.ofNullable(request.expectedBucketOwner()).map(Object::toString)
-                    .orElse(null))
-            .done().properties(httpRequestHead.getProperties()).build(),
+            .setOnlyHeader("x-amz-expected-bucket-owner", Optional
+                .ofNullable(request.expectedBucketOwner()).map(Object::toString).orElse(null))
+            .done().build(),
         object.getContentStreamProvider().newStream());
   }
 }

@@ -1,5 +1,6 @@
 package com.sigpwned.aws.sdk.lite.s3.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.sigpwned.aws.sdk.lite.core.SdkResponse;
 import lombok.AllArgsConstructor;
@@ -16,8 +17,10 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(fluent = true, chain = true)
 public class ListObjectsV2Response extends SdkResponse {
-  private List<CommonPrefix> commonPrefixes;
-  private List<S3Object> contents;
+  @Builder.Default
+  private List<CommonPrefix> commonPrefixes = new ArrayList<>();
+  @Builder.Default
+  private List<S3Object> contents = new ArrayList<>();
   private String continuationToken;
   private String delimiter;
   private String encodingType;

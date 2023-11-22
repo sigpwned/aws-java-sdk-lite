@@ -42,8 +42,7 @@ public class DeleteObjectsRequestMapper
             Optional.ofNullable(request.mfa()).map(Object::toString).orElse(null))
         .setOnlyHeader("x-amz-request-payer",
             Optional.ofNullable(request.requestPayer()).map(Object::toString).orElse(null))
-        .done().properties(httpRequestHead.getProperties()).build()
-        .toRequest(new XmlModelHttpEntity(delete(request.delete())));
+        .done().build().toRequest(new XmlModelHttpEntity(delete(request.delete())));
   }
 
   /* default */ Element delete(Delete delete) {

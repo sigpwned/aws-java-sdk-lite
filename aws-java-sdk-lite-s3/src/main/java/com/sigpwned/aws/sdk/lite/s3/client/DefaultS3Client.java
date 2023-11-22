@@ -12,10 +12,14 @@ import com.sigpwned.aws.sdk.lite.core.io.ResponseInputStream;
 import com.sigpwned.aws.sdk.lite.core.util.AwsRegions;
 import com.sigpwned.aws.sdk.lite.s3.S3Client;
 import com.sigpwned.aws.sdk.lite.s3.exception.mapper.AccessDeniedExceptionMapper;
+import com.sigpwned.aws.sdk.lite.s3.exception.mapper.BucketAlreadyExistsExceptionMapper;
+import com.sigpwned.aws.sdk.lite.s3.exception.mapper.BucketAlreadyOwnedByYouExceptionMapper;
 import com.sigpwned.aws.sdk.lite.s3.exception.mapper.ExpiredTokenExceptionMapper;
 import com.sigpwned.aws.sdk.lite.s3.exception.mapper.NoSuchBucketExceptionMapper;
 import com.sigpwned.aws.sdk.lite.s3.exception.mapper.NoSuchKeyExceptionMapper;
 import com.sigpwned.aws.sdk.lite.s3.exception.mapper.PermanentRedirectExceptionMapper;
+import com.sigpwned.aws.sdk.lite.s3.mapper.CreateBucketRequestMapper;
+import com.sigpwned.aws.sdk.lite.s3.mapper.CreateBucketResponseMapper;
 import com.sigpwned.aws.sdk.lite.s3.mapper.DeleteObjectRequestMapper;
 import com.sigpwned.aws.sdk.lite.s3.mapper.DeleteObjectResponseMapper;
 import com.sigpwned.aws.sdk.lite.s3.mapper.DeleteObjectsRequestMapper;
@@ -30,6 +34,8 @@ import com.sigpwned.aws.sdk.lite.s3.mapper.ListObjectsV2RequestMapper;
 import com.sigpwned.aws.sdk.lite.s3.mapper.ListObjectsV2ResponseMapper;
 import com.sigpwned.aws.sdk.lite.s3.mapper.PutObjectRequestAndObjectMapper;
 import com.sigpwned.aws.sdk.lite.s3.mapper.PutObjectResponseMapper;
+import com.sigpwned.aws.sdk.lite.s3.model.CreateBucketRequest;
+import com.sigpwned.aws.sdk.lite.s3.model.CreateBucketResponse;
 import com.sigpwned.aws.sdk.lite.s3.model.DeleteObjectRequest;
 import com.sigpwned.aws.sdk.lite.s3.model.DeleteObjectResponse;
 import com.sigpwned.aws.sdk.lite.s3.model.DeleteObjectsRequest;
@@ -70,6 +76,8 @@ public class DefaultS3Client extends AwsClient implements S3Client {
       AwsCredentialsProvider credentialsProvider, String region) {
     super(client, credentialsProvider, region, S3.SERVICE_NAME);
 
+    getClient().registerRequestMapper(new CreateBucketRequestMapper());
+    getClient().registerResponseMapper(new CreateBucketResponseMapper());
     getClient().registerRequestMapper(new DeleteObjectRequestMapper());
     getClient().registerResponseMapper(new DeleteObjectResponseMapper());
     getClient().registerRequestMapper(new DeleteObjectsRequestMapper());
@@ -85,10 +93,20 @@ public class DefaultS3Client extends AwsClient implements S3Client {
     getClient().registerRequestMapper(new PutObjectRequestAndObjectMapper());
     getClient().registerResponseMapper(new PutObjectResponseMapper());
     getClient().registerExceptionMapper(new AccessDeniedExceptionMapper());
+    getClient().registerExceptionMapper(new BucketAlreadyExistsExceptionMapper());
+    getClient().registerExceptionMapper(new BucketAlreadyOwnedByYouExceptionMapper());
     getClient().registerExceptionMapper(new ExpiredTokenExceptionMapper());
     getClient().registerExceptionMapper(new NoSuchBucketExceptionMapper());
     getClient().registerExceptionMapper(new NoSuchKeyExceptionMapper());
     getClient().registerExceptionMapper(new PermanentRedirectExceptionMapper());
+  }
+
+  @Override
+  public CreateBucketResponse createBucket(CreateBucketRequest request) {
+    return unsafe(() -> {
+      return getClient().send(newHttpRequestHeadBuilder().method(ModelHttpMethods.PUT).build(),
+          request, CreateBucketResponse.class);
+    });
   }
 
   /**

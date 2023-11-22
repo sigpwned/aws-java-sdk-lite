@@ -1,6 +1,7 @@
 package com.sigpwned.aws.sdk.lite.s3.model;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.Map;
 import com.sigpwned.aws.sdk.lite.core.SdkResponse;
 import com.sigpwned.aws.sdk.lite.core.model.Range;
@@ -36,7 +37,8 @@ public class GetObjectResponse extends SdkResponse {
   private String expiration;
   private Instant expires;
   private Instant lastModified;
-  private Map<String, String> metadata;
+  @Builder.Default
+  private Map<String, String> metadata = new HashMap<>();
   private Integer missingMeta;
   private String objectLockLegalHoldStatus;
   private String objectLockMode;

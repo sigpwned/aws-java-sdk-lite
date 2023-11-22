@@ -37,6 +37,6 @@ public class ListObjectsV2RequestMapper
             value.optionalObjectAttributes() != null && !value.optionalObjectAttributes().isEmpty()
                 ? String.join(", ", value.optionalObjectAttributes())
                 : null)
-        .done().properties(httpRequestHead.getProperties()).build().toRequest();
+        .done().build().toRequest();
   }
 }

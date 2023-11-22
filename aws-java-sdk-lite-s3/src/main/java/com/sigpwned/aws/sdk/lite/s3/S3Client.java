@@ -3,6 +3,8 @@ package com.sigpwned.aws.sdk.lite.s3;
 import com.sigpwned.aws.sdk.lite.core.io.RequestBody;
 import com.sigpwned.aws.sdk.lite.core.io.ResponseInputStream;
 import com.sigpwned.aws.sdk.lite.s3.client.DefaultS3ClientBuilder;
+import com.sigpwned.aws.sdk.lite.s3.model.CreateBucketRequest;
+import com.sigpwned.aws.sdk.lite.s3.model.CreateBucketResponse;
 import com.sigpwned.aws.sdk.lite.s3.model.DeleteObjectRequest;
 import com.sigpwned.aws.sdk.lite.s3.model.DeleteObjectResponse;
 import com.sigpwned.aws.sdk.lite.s3.model.DeleteObjectsRequest;
@@ -20,9 +22,11 @@ import com.sigpwned.aws.sdk.lite.s3.model.PutObjectRequest;
 import com.sigpwned.aws.sdk.lite.s3.model.PutObjectResponse;
 
 public interface S3Client extends AutoCloseable {
-  public static S3ClientBuilder builder() {
+  public static DefaultS3ClientBuilder builder() {
     return new DefaultS3ClientBuilder();
   }
+
+  public CreateBucketResponse createBucket(CreateBucketRequest request);
 
   public HeadBucketResponse headBucket(HeadBucketRequest request);
 

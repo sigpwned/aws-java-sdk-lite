@@ -20,6 +20,10 @@ public final class ErrorMessages {
 
   public static final String CODE_NO_SUCH_KEY = "NoSuchKey";
 
+  public static final String CODE_BUCKET_ALREADY_EXISTS = "BucketAlreadyExists";
+
+  public static final String CODE_BUCKET_ALREADY_OWNED_BY_YOU = "BucketAlreadyOwnedByYou";
+
   public static ErrorMessage fromString(String xml) throws IOException {
     return fromXml(new XmlReader(xml).document());
   }

@@ -47,7 +47,7 @@ public class GetObjectRequestMapper implements ModelHttpBeanClientRequestMapper<
             Optional.ofNullable(request.expectedBucketOwner()).map(Object::toString).orElse(null))
         .setOnlyHeader("x-amz-checksum-mode",
             Optional.ofNullable(request.checksumMode()).map(Object::toString).orElse(null))
-        .done().properties(httpRequestHead.getProperties()).build().toRequest();
+        .done().build().toRequest();
 
   }
 }

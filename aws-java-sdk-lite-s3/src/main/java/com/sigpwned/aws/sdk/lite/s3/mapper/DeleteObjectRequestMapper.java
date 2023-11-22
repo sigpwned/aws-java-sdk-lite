@@ -18,8 +18,8 @@ public class DeleteObjectRequestMapper
   }
 
   @Override
-  public ModelHttpRequest mapRequest(ModelHttpRequestHead httpRequestHead, DeleteObjectRequest request)
-      throws IOException {
+  public ModelHttpRequest mapRequest(ModelHttpRequestHead httpRequestHead,
+      DeleteObjectRequest request) throws IOException {
     return httpRequestHead.toBuilder().method(ModelHttpMethods.DELETE).url().queryString()
         .setOnlyParameter("versionId",
             Optional.ofNullable(request.versionId()).map(Object::toString).orElse(null))
@@ -33,6 +33,6 @@ public class DeleteObjectRequestMapper
             Optional.ofNullable(request.mfa()).map(Object::toString).orElse(null))
         .setOnlyHeader("x-amz-request-payer",
             Optional.ofNullable(request.requestPayer()).map(Object::toString).orElse(null))
-        .done().properties(httpRequestHead.getProperties()).build().toRequest();
+        .done().build().toRequest();
   }
 }

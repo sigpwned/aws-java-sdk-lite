@@ -3,7 +3,7 @@ package com.sigpwned.aws.sdk.lite.s3.mapper;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import com.sigpwned.aws.sdk.lite.s3.exception.NoSuchBucketException;
+import com.sigpwned.aws.sdk.lite.s3.exception.NoSuchKeyException;
 import com.sigpwned.aws.sdk.lite.s3.model.HeadObjectResponse;
 import com.sigpwned.httpmodel.core.client.bean.ModelHttpBeanClientResponseMapper;
 import com.sigpwned.httpmodel.core.model.ModelHttpHeaders;
@@ -24,16 +24,18 @@ public class HeadObjectResponseMapper
   public HeadObjectResponse mapResponse(ModelHttpRequestHead httpRequestHead,
       ModelHttpResponse response) throws IOException {
     try {
-      String bucket = httpRequestHead.getHeaders()
-          .findFirstHeaderByName(HeadBucketRequestMapper.X_S3_BUCKET_HEADER_NAME)
-          .map(Header::getValue).get();
+      @SuppressWarnings("unused")
+      String bucket = httpRequestHead.getProperty(HeadObjectRequestMapper.X_S3_BUCKET_PROPERTY_NAME)
+          .map(String.class::cast).get();
+      String key = httpRequestHead.getProperty(HeadObjectRequestMapper.X_S3_KEY_PROPERTY_NAME)
+          .map(String.class::cast).get();
 
       // As documented
       // https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadObject.html#API_HeadObject_Errors
       // We also see 404 in the wild, which makes way more sense, if we're honest.
       if (response.getStatusCode() == ModelHttpStatusCodes.BAD_REQUEST
           || response.getStatusCode() == ModelHttpStatusCodes.NOT_FOUND)
-        throw new NoSuchBucketException(bucket);
+        throw new NoSuchKeyException(key);
 
       ModelHttpHeaders hs = response.getHeaders();
       return HeadObjectResponse.builder()
@@ -74,7 +76,7 @@ public class HeadObjectResponseMapper
           .lastModified(hs.findFirstHeaderByName("last-modified").map(Header::getValue)
               .map(s -> OffsetDateTime.parse(s, DateTimeFormatter.RFC_1123_DATE_TIME))
               .map(OffsetDateTime::toInstant).orElse(null))
-          .missingMeta(hs.findFirstHeaderByName("last-modified").map(Header::getValue)
+          .missingMeta(hs.findFirstHeaderByName("x-amz-missing-meta").map(Header::getValue)
               .map(Integer::valueOf).orElse(null))
           .objectLockLegalHoldStatus(hs.findFirstHeaderByName("x-amz-object-lock-legal-hold")
               .map(Header::getValue).map(String::valueOf).orElse(null))
