@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,19 +20,32 @@
 package com.sigpwned.aws.sdk.lite.s3.mapper;
 
 import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
 import java.io.IOException;
 import java.util.Optional;
 import com.sigpwned.aws.sdk.lite.core.io.RequestBody;
 import com.sigpwned.aws.sdk.lite.s3.client.PutObjectRequestAndObject;
 import com.sigpwned.aws.sdk.lite.s3.model.PutObjectRequest;
 import com.sigpwned.httpmodel.core.client.bean.ModelHttpBeanClientRequestMapper;
+import com.sigpwned.httpmodel.core.io.InputStreamBufferingStrategy;
 import com.sigpwned.httpmodel.core.model.ModelHttpMediaType;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequest;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequestHead;
+import com.sigpwned.httpmodel.core.util.ModelHttpHeaderNames;
 import com.sigpwned.httpmodel.core.util.ModelHttpMethods;
 
 public class PutObjectRequestAndObjectMapper
     implements ModelHttpBeanClientRequestMapper<PutObjectRequestAndObject> {
+  private final InputStreamBufferingStrategy bufferingStrategy;
+
+  public PutObjectRequestAndObjectMapper() {
+    this(InputStreamBufferingStrategy.DEFAULT);
+  }
+
+  public PutObjectRequestAndObjectMapper(InputStreamBufferingStrategy bufferingStrategy) {
+    this.bufferingStrategy = requireNonNull(bufferingStrategy);
+  }
+
   @Override
   public boolean isMappable(Class<?> requestType, ModelHttpMediaType contentType) {
     return requestType.equals(PutObjectRequestAndObject.class);
@@ -48,7 +61,7 @@ public class PutObjectRequestAndObjectMapper
         Optional.ofNullable(object.getContentLength()).orElse(request.contentLength());
     String contentType = Optional.ofNullable(object.getContentType()).orElse(request.contentType());
 
-    return new ModelHttpRequest(
+    ModelHttpRequest result = new ModelHttpRequest(
         httpRequestHead.toBuilder().method(ModelHttpMethods.PUT).url()
             .appendPath(format("%s/%s", request.bucket(), request.key())).done().headers()
             .setOnlyHeader("x-amz-acl",
@@ -125,5 +138,31 @@ public class PutObjectRequestAndObjectMapper
                 .ofNullable(request.expectedBucketOwner()).map(Object::toString).orElse(null))
             .done().build(),
         object.getContentStreamProvider().newStream());
+
+    // For this endpoint, we need to set the Content-Length header explicitly
+    if (result.getHeaders().findFirstHeaderByName(ModelHttpHeaderNames.CONTENT_LENGTH)
+        .isPresent()) {
+      // The header is set, and we're in good shape.
+    } else {
+      // The header is not set, so let's set it now.
+      if (result.length().isPresent()) {
+        result.getHeaders().setOnlyHeader(ModelHttpHeaderNames.CONTENT_LENGTH,
+            Long.toString(result.length().getAsLong()));
+      } else if (!result.isBuffered()) {
+        result.buffer(getBufferingStrategy());
+        if (result.length().isPresent()) {
+          result.getHeaders().setOnlyHeader(ModelHttpHeaderNames.CONTENT_LENGTH,
+              Long.toString(result.length().getAsLong()));
+        } else {
+          throw new IOException("Failed to determine request body content length");
+        }
+      }
+    }
+
+    return result;
+  }
+
+  private InputStreamBufferingStrategy getBufferingStrategy() {
+    return bufferingStrategy;
   }
 }
