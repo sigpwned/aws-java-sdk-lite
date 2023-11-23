@@ -19,9 +19,13 @@
  */
 package com.sigpwned.aws.sdk.lite.s3.client;
 
+import static java.util.Objects.requireNonNull;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.List;
+import java.util.Map;
+import com.sigpwned.aws.sdk.lite.core.Endpoint;
 import com.sigpwned.aws.sdk.lite.core.client.AwsClient;
 import com.sigpwned.aws.sdk.lite.core.credentials.provider.AwsCredentialsProvider;
 import com.sigpwned.aws.sdk.lite.core.credentials.provider.DefaultAwsCredentialsProviderChain;
@@ -30,6 +34,8 @@ import com.sigpwned.aws.sdk.lite.core.io.RequestBody;
 import com.sigpwned.aws.sdk.lite.core.io.ResponseInputStream;
 import com.sigpwned.aws.sdk.lite.core.util.AwsRegions;
 import com.sigpwned.aws.sdk.lite.s3.S3Client;
+import com.sigpwned.aws.sdk.lite.s3.S3EndpointParams;
+import com.sigpwned.aws.sdk.lite.s3.S3EndpointProvider;
 import com.sigpwned.aws.sdk.lite.s3.exception.mapper.AccessDeniedExceptionMapper;
 import com.sigpwned.aws.sdk.lite.s3.exception.mapper.BucketAlreadyExistsExceptionMapper;
 import com.sigpwned.aws.sdk.lite.s3.exception.mapper.BucketAlreadyOwnedByYouExceptionMapper;
@@ -75,25 +81,31 @@ import com.sigpwned.httpmodel.core.client.bean.DefaultModelHttpBeanClient;
 import com.sigpwned.httpmodel.core.client.bean.ModelHttpBeanClient;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequestHead;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequestHeadBuilder;
+import com.sigpwned.httpmodel.core.model.ModelHttpUrl;
 import com.sigpwned.httpmodel.core.util.ModelHttpMethods;
 
 public class DefaultS3Client extends AwsClient implements S3Client {
+  private final S3EndpointProvider endpointProvider;
+
   public DefaultS3Client() {
     this(DefaultAwsCredentialsProviderChain.getInstance());
   }
 
   public DefaultS3Client(AwsCredentialsProvider credentialsProvider) {
     this(new DefaultModelHttpBeanClient(), credentialsProvider,
-        AwsRegions.findDefaultRegion().orElseThrow());
+        AwsRegions.findDefaultRegion().orElseThrow(), S3EndpointProvider.defaultProvider());
   }
 
-  public DefaultS3Client(AwsCredentialsProvider credentialsProvider, String region) {
-    this(new DefaultModelHttpBeanClient(), credentialsProvider, region);
+  public DefaultS3Client(AwsCredentialsProvider credentialsProvider, String region,
+      S3EndpointProvider endpointProvider) {
+    this(new DefaultModelHttpBeanClient(), credentialsProvider, region, endpointProvider);
   }
 
   /* default */ DefaultS3Client(ModelHttpBeanClient client,
-      AwsCredentialsProvider credentialsProvider, String region) {
+      AwsCredentialsProvider credentialsProvider, String region,
+      S3EndpointProvider endpointProvider) {
     super(client, credentialsProvider, region, S3.SERVICE_NAME);
+    this.endpointProvider = requireNonNull(endpointProvider);
     getClient().registerRequestMapper(new CreateBucketRequestMapper());
     getClient().registerResponseMapper(new CreateBucketResponseMapper());
     getClient().registerRequestMapper(new DeleteObjectRequestMapper());
@@ -122,8 +134,9 @@ public class DefaultS3Client extends AwsClient implements S3Client {
   @Override
   public CreateBucketResponse createBucket(CreateBucketRequest request) {
     return unsafe(() -> {
-      return getClient().send(newHttpRequestHeadBuilder().method(ModelHttpMethods.PUT).build(),
-          request, CreateBucketResponse.class);
+      return getClient().send(
+          newHttpRequestHeadBuilder(request.bucket()).method(ModelHttpMethods.PUT).build(), request,
+          CreateBucketResponse.class);
     });
   }
 
@@ -133,7 +146,8 @@ public class DefaultS3Client extends AwsClient implements S3Client {
   @Override
   public HeadBucketResponse headBucket(HeadBucketRequest request) {
     return unsafe(() -> {
-      return getClient().send(newHttpRequestHeadBuilder().method(ModelHttpMethods.HEAD).build(),
+      return getClient().send(
+          newHttpRequestHeadBuilder(request.bucket()).method(ModelHttpMethods.HEAD).build(),
           request, HeadBucketResponse.class);
     });
   }
@@ -144,7 +158,8 @@ public class DefaultS3Client extends AwsClient implements S3Client {
   @Override
   public HeadObjectResponse headObject(HeadObjectRequest request) {
     return unsafe(() -> {
-      return getClient().send(newHttpRequestHeadBuilder().method(ModelHttpMethods.HEAD).build(),
+      return getClient().send(
+          newHttpRequestHeadBuilder(request.bucket()).method(ModelHttpMethods.HEAD).build(),
           request, HeadObjectResponse.class);
     });
   }
@@ -155,9 +170,9 @@ public class DefaultS3Client extends AwsClient implements S3Client {
       // TODO Should we be parallel with RequestBody from putObject()? i.e., ResponseBody and
       // ContentStream?
 
-      GetObjectResponseAndObject responseAndObject =
-          getClient().send(newHttpRequestHeadBuilder().method(ModelHttpMethods.GET).build(),
-              request, GetObjectResponseAndObject.class);
+      GetObjectResponseAndObject responseAndObject = getClient().send(
+          newHttpRequestHeadBuilder(request.bucket()).method(ModelHttpMethods.GET).build(), request,
+          GetObjectResponseAndObject.class);
 
       ResponseInputStream<GetObjectResponse> result = null;
       final GetObjectResponse response = responseAndObject.getResponse();
@@ -196,7 +211,8 @@ public class DefaultS3Client extends AwsClient implements S3Client {
   @Override
   public DeleteObjectResponse deleteObject(DeleteObjectRequest request) {
     return unsafe(() -> {
-      return getClient().send(newHttpRequestHeadBuilder().method(ModelHttpMethods.DELETE).build(),
+      return getClient().send(
+          newHttpRequestHeadBuilder(request.bucket()).method(ModelHttpMethods.DELETE).build(),
           request, DeleteObjectResponse.class);
     });
   }
@@ -204,7 +220,8 @@ public class DefaultS3Client extends AwsClient implements S3Client {
   @Override
   public DeleteObjectsResponse deleteObjects(DeleteObjectsRequest request) {
     return unsafe(() -> {
-      return getClient().send(newHttpRequestHeadBuilder().method(ModelHttpMethods.POST).build(),
+      return getClient().send(
+          newHttpRequestHeadBuilder(request.bucket()).method(ModelHttpMethods.POST).build(),
           request, DeleteObjectsResponse.class);
     });
   }
@@ -212,7 +229,8 @@ public class DefaultS3Client extends AwsClient implements S3Client {
   @Override
   public PutObjectResponse putObject(PutObjectRequest request, RequestBody entity) {
     return unsafe(() -> {
-      return getClient().send(newHttpRequestHeadBuilder().method(ModelHttpMethods.PUT).build(),
+      return getClient().send(
+          newHttpRequestHeadBuilder(request.bucket()).method(ModelHttpMethods.PUT).build(),
           new PutObjectRequestAndObject(request, entity), PutObjectResponse.class);
     });
   }
@@ -220,8 +238,9 @@ public class DefaultS3Client extends AwsClient implements S3Client {
   @Override
   public ListObjectsV2Response listObjectsV2(ListObjectsV2Request request) {
     return unsafe(() -> {
-      return getClient().send(newHttpRequestHeadBuilder().method(ModelHttpMethods.GET).build(),
-          request, ListObjectsV2Response.class);
+      return getClient().send(
+          newHttpRequestHeadBuilder(request.bucket()).method(ModelHttpMethods.GET).build(), request,
+          ListObjectsV2Response.class);
     });
   }
 
@@ -233,7 +252,27 @@ public class DefaultS3Client extends AwsClient implements S3Client {
   /**
    * hook
    */
-  protected ModelHttpRequestHeadBuilder newHttpRequestHeadBuilder() {
-    return ModelHttpRequestHead.builder().url(baseUrl());
+  protected ModelHttpRequestHeadBuilder newHttpRequestHeadBuilder(String bucket) {
+    Endpoint endpoint = endpointProvider
+        .resolveEndpoint(S3EndpointParams.builder().bucket(bucket).region(getRegion()).build());
+
+    ModelHttpRequestHeadBuilder result = ModelHttpRequestHead.builder();
+
+    if (endpoint.headers() != null) {
+      for (Map.Entry<String, List<String>> e : endpoint.headers().entrySet()) {
+        String headerName = e.getKey();
+        for (String headerValue : e.getValue()) {
+          result.headers().addHeaderLast(headerName, headerValue).done();
+        }
+      }
+    }
+
+    if (endpoint.properties() != null) {
+      for (Map.Entry<String, Object> e : endpoint.properties().entrySet()) {
+        result.property(e.getKey(), e.getValue());
+      }
+    }
+
+    return ModelHttpRequestHead.builder().url(ModelHttpUrl.fromUri(endpoint.url()));
   }
 }
