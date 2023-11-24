@@ -29,7 +29,7 @@ import com.sigpwned.aws.sdk.lite.core.http.AwsSigningHttpRequestInterceptor;
 import com.sigpwned.aws.sdk.lite.core.http.SdkResponseDecoratingBeanHttpResponseFilter;
 import com.sigpwned.aws.sdk.lite.core.http.SigV4AwsSigner;
 import com.sigpwned.aws.sdk.lite.core.util.AwsEndpoints;
-import com.sigpwned.httpmodel.core.client.bean.ModelHttpBeanClient;
+import com.sigpwned.httpmodel.client.bean.ModelHttpBeanClient;
 import com.sigpwned.httpmodel.core.model.ModelHttpAuthority;
 import com.sigpwned.httpmodel.core.model.ModelHttpHost;
 import com.sigpwned.httpmodel.core.model.ModelHttpUrl;

@@ -23,7 +23,7 @@ import static java.lang.String.format;
 import java.io.IOException;
 import java.util.Optional;
 import com.sigpwned.aws.sdk.lite.s3.model.HeadObjectRequest;
-import com.sigpwned.httpmodel.core.client.bean.ModelHttpBeanClientRequestMapper;
+import com.sigpwned.httpmodel.client.bean.ModelHttpBeanClientRequestMapper;
 import com.sigpwned.httpmodel.core.model.ModelHttpMediaType;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequest;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequestHead;

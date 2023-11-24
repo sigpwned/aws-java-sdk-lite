@@ -25,7 +25,7 @@ import com.sigpwned.aws.sdk.lite.core.model.ErrorMessage;
 import com.sigpwned.aws.sdk.lite.s3.exception.BucketAlreadyOwnedByYouException;
 import com.sigpwned.aws.sdk.lite.s3.util.ErrorMessages;
 import com.sigpwned.aws.sdk.lite.s3.util.S3Exceptions;
-import com.sigpwned.httpmodel.core.client.bean.ModelHttpBeanClientExceptionMapper;
+import com.sigpwned.httpmodel.client.bean.ModelHttpBeanClientExceptionMapper;
 import com.sigpwned.httpmodel.core.io.InputStreamBufferingStrategy;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequestHead;
 import com.sigpwned.httpmodel.core.model.ModelHttpResponse;

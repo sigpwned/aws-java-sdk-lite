@@ -13,7 +13,7 @@
     <dependencies>
         <dependency>
             <groupId>com.sigpwned</groupId>
-            <artifactId>httpmodel-core</artifactId>
+            <artifactId>httpmodel-client</artifactId>
             <version>${httpmodel.version}</version>
         </dependency>
         <dependency>

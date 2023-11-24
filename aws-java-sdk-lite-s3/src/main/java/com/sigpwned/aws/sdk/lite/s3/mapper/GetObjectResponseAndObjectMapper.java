@@ -26,7 +26,7 @@ import com.sigpwned.aws.sdk.lite.core.io.AbortableInputStream;
 import com.sigpwned.aws.sdk.lite.s3.client.GetObjectResponseAndObject;
 import com.sigpwned.aws.sdk.lite.s3.client.ObjectByteSource;
 import com.sigpwned.aws.sdk.lite.s3.model.GetObjectResponse;
-import com.sigpwned.httpmodel.core.client.bean.ModelHttpBeanClientResponseMapper;
+import com.sigpwned.httpmodel.client.bean.ModelHttpBeanClientResponseMapper;
 import com.sigpwned.httpmodel.core.model.ModelHttpHeaders;
 import com.sigpwned.httpmodel.core.model.ModelHttpHeaders.Header;
 import com.sigpwned.httpmodel.core.model.ModelHttpMediaType;

@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import com.sigpwned.aws.sdk.lite.s3.model.CommonPrefix;
 import com.sigpwned.aws.sdk.lite.s3.model.ListObjectsV2Response;
 import com.sigpwned.aws.sdk.lite.s3.model.S3Object;
-import com.sigpwned.httpmodel.core.client.bean.ModelHttpBeanClientResponseMapper;
+import com.sigpwned.httpmodel.client.bean.ModelHttpBeanClientResponseMapper;
 import com.sigpwned.httpmodel.core.model.ModelHttpMediaType;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequestHead;
 import com.sigpwned.httpmodel.core.model.ModelHttpResponse;

@@ -28,7 +28,7 @@ import java.util.Objects;
 import com.sigpwned.aws.sdk.lite.s3.model.DeleteObjectsResponse;
 import com.sigpwned.aws.sdk.lite.s3.model.DeletedObject;
 import com.sigpwned.aws.sdk.lite.s3.model.S3Error;
-import com.sigpwned.httpmodel.core.client.bean.ModelHttpBeanClientResponseMapper;
+import com.sigpwned.httpmodel.client.bean.ModelHttpBeanClientResponseMapper;
 import com.sigpwned.httpmodel.core.model.ModelHttpHeaders;
 import com.sigpwned.httpmodel.core.model.ModelHttpHeaders.Header;
 import com.sigpwned.httpmodel.core.model.ModelHttpMediaType;

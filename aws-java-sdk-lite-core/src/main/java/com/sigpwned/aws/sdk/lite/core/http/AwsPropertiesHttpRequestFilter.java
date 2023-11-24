@@ -22,7 +22,7 @@ package com.sigpwned.aws.sdk.lite.core.http;
 import static java.util.Objects.requireNonNull;
 import java.io.IOException;
 import com.sigpwned.aws.sdk.lite.core.util.AwsProperties;
-import com.sigpwned.httpmodel.core.ModelHttpRequestFilter;
+import com.sigpwned.httpmodel.client.ModelHttpRequestFilter;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequestHead;
 
 public class AwsPropertiesHttpRequestFilter implements ModelHttpRequestFilter {

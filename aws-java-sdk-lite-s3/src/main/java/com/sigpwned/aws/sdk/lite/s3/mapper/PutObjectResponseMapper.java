@@ -21,7 +21,7 @@ package com.sigpwned.aws.sdk.lite.s3.mapper;
 
 import java.io.IOException;
 import com.sigpwned.aws.sdk.lite.s3.model.PutObjectResponse;
-import com.sigpwned.httpmodel.core.client.bean.ModelHttpBeanClientResponseMapper;
+import com.sigpwned.httpmodel.client.bean.ModelHttpBeanClientResponseMapper;
 import com.sigpwned.httpmodel.core.model.ModelHttpHeaders;
 import com.sigpwned.httpmodel.core.model.ModelHttpHeaders.Header;
 import com.sigpwned.httpmodel.core.model.ModelHttpMediaType;

@@ -24,7 +24,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import com.sigpwned.aws.sdk.lite.s3.exception.NoSuchKeyException;
 import com.sigpwned.aws.sdk.lite.s3.model.HeadObjectResponse;
-import com.sigpwned.httpmodel.core.client.bean.ModelHttpBeanClientResponseMapper;
+import com.sigpwned.httpmodel.client.bean.ModelHttpBeanClientResponseMapper;
 import com.sigpwned.httpmodel.core.model.ModelHttpHeaders;
 import com.sigpwned.httpmodel.core.model.ModelHttpHeaders.Header;
 import com.sigpwned.httpmodel.core.model.ModelHttpMediaType;

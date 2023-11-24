@@ -26,7 +26,7 @@ import java.util.Optional;
 import com.sigpwned.aws.sdk.lite.core.io.RequestBody;
 import com.sigpwned.aws.sdk.lite.s3.client.PutObjectRequestAndObject;
 import com.sigpwned.aws.sdk.lite.s3.model.PutObjectRequest;
-import com.sigpwned.httpmodel.core.client.bean.ModelHttpBeanClientRequestMapper;
+import com.sigpwned.httpmodel.client.bean.ModelHttpBeanClientRequestMapper;
 import com.sigpwned.httpmodel.core.io.InputStreamBufferingStrategy;
 import com.sigpwned.httpmodel.core.model.ModelHttpMediaType;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequest;

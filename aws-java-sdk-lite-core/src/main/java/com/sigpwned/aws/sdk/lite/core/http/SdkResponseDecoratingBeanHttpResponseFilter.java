@@ -20,7 +20,7 @@
 package com.sigpwned.aws.sdk.lite.core.http;
 
 import com.sigpwned.aws.sdk.lite.core.SdkResponse;
-import com.sigpwned.httpmodel.core.client.bean.ModelHttpBeanClientResponseFilter;
+import com.sigpwned.httpmodel.client.bean.ModelHttpBeanClientResponseFilter;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequestHead;
 import com.sigpwned.httpmodel.core.model.ModelHttpResponseHead;
 

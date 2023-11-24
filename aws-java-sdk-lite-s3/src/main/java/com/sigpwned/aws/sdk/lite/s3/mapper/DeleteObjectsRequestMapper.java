@@ -29,7 +29,7 @@ import com.sigpwned.aws.sdk.lite.s3.model.Delete;
 import com.sigpwned.aws.sdk.lite.s3.model.DeleteObjectRequest;
 import com.sigpwned.aws.sdk.lite.s3.model.DeleteObjectsRequest;
 import com.sigpwned.aws.sdk.lite.s3.model.ObjectIdentifier;
-import com.sigpwned.httpmodel.core.client.bean.ModelHttpBeanClientRequestMapper;
+import com.sigpwned.httpmodel.client.bean.ModelHttpBeanClientRequestMapper;
 import com.sigpwned.httpmodel.core.model.ModelHttpMediaType;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequest;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequestHead;
