@@ -20,18 +20,28 @@
 package com.sigpwned.aws.sdk.lite.s3;
 
 import com.sigpwned.aws.sdk.lite.core.client.AwsClientBuilder;
+import com.sigpwned.aws.sdk.lite.core.credentials.provider.AwsCredentialsProvider;
 
-public abstract class S3ClientBuilder<B extends S3ClientBuilder<B>> extends AwsClientBuilder<B> {
+public abstract class S3ClientBuilder extends AwsClientBuilder {
   private S3EndpointProvider endpointProvider = S3EndpointProvider.defaultProvider();
 
   public S3EndpointProvider endpointProvider() {
     return endpointProvider;
   }
 
-  @SuppressWarnings("unchecked")
-  public B endpointProvider(S3EndpointProvider endpointProvider) {
+  public S3ClientBuilder endpointProvider(S3EndpointProvider endpointProvider) {
     this.endpointProvider = endpointProvider;
-    return (B) this;
+    return this;
+  }
+
+  @Override
+  public S3ClientBuilder credentialsProvider(AwsCredentialsProvider credentialsProvider) {
+    return (S3ClientBuilder) super.credentialsProvider(credentialsProvider);
+  }
+
+  @Override
+  public S3ClientBuilder region(String region) {
+    return (S3ClientBuilder) super.region(region);
   }
 
   public abstract S3Client build();
