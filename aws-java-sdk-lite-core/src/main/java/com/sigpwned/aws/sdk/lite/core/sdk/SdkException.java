@@ -17,12 +17,20 @@
  * limitations under the License.
  * ==================================LICENSE_END===================================
  */
-package com.sigpwned.aws.sdk.lite.core;
+package com.sigpwned.aws.sdk.lite.core.sdk;
 
-@FunctionalInterface
-public interface Abortable {
-  public static final Abortable NOP = () -> {
-  };
+public class SdkException extends RuntimeException {
+  private static final long serialVersionUID = -7453158983259257492L;
 
-  public void abort();
+  public SdkException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  public SdkException(String message) {
+    super(message);
+  }
+
+  public SdkException(Throwable cause) {
+    super(cause);
+  }
 }

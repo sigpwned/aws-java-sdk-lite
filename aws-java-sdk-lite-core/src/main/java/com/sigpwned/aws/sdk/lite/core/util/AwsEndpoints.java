@@ -22,7 +22,7 @@ package com.sigpwned.aws.sdk.lite.core.util;
 import static java.lang.String.format;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import com.sigpwned.aws.sdk.lite.core.AwsEndpoint;
+import com.sigpwned.aws.sdk.lite.core.aws.AwsEndpoint;
 import com.sigpwned.httpmodel.core.model.host.ModelHttpHostnameHost;
 
 /**

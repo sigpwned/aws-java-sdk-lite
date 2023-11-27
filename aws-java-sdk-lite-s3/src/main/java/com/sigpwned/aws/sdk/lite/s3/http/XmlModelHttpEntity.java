@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,20 +22,19 @@ package com.sigpwned.aws.sdk.lite.s3.http;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
 import com.sigpwned.httpmodel.core.io.BufferedInputStream;
 import com.sigpwned.httpmodel.core.io.buffered.MemoryBufferedInputStream;
 import com.sigpwned.httpmodel.core.model.ModelHttpEntity;
 import com.sigpwned.httpmodel.core.model.ModelHttpMediaType;
-import com.sigpwned.millidata.xml.XmlWriter;
-import com.sigpwned.millidata.xml.model.Document;
-import com.sigpwned.millidata.xml.model.node.Element;
 
 public class XmlModelHttpEntity implements ModelHttpEntity {
   private final Document document;
-
-  public XmlModelHttpEntity(Element root) {
-    this(new Document(root));
-  }
 
   public XmlModelHttpEntity(Document document) {
     if (document == null)
@@ -55,7 +54,12 @@ public class XmlModelHttpEntity implements ModelHttpEntity {
   public BufferedInputStream toInputStream() throws IOException {
     StringWriter buf = new StringWriter();
     try {
-      new XmlWriter(buf).document(getDocument());
+      TransformerFactory tf = TransformerFactory.newInstance();
+      Transformer transformer = tf.newTransformer();
+      StringWriter writer = new StringWriter();
+      transformer.transform(new DOMSource(getDocument()), new StreamResult(writer));
+    } catch (TransformerException e) {
+      throw new IOException("Failed to convert XML document to String", e);
     } finally {
       buf.close();
     }

@@ -17,11 +17,12 @@
  * limitations under the License.
  * ==================================LICENSE_END===================================
  */
-package com.sigpwned.aws.sdk.lite.core.credentials.provider;
+package com.sigpwned.aws.sdk.lite.core.auth.credentials.provider;
 
 import static java.util.Collections.unmodifiableList;
 import java.util.List;
-import com.sigpwned.aws.sdk.lite.core.credentials.AwsCredentials;
+import com.sigpwned.aws.sdk.lite.core.auth.AwsCredentials;
+import com.sigpwned.aws.sdk.lite.core.auth.AwsCredentialsProvider;
 
 public class AwsCredentialsProviderChain implements AwsCredentialsProvider {
   private final List<AwsCredentialsProvider> providers;

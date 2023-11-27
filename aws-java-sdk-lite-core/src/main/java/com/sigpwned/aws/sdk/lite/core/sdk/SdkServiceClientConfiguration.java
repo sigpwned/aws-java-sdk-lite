@@ -17,8 +17,22 @@
  * limitations under the License.
  * ==================================LICENSE_END===================================
  */
-package com.sigpwned.aws.sdk.lite.core;
+package com.sigpwned.aws.sdk.lite.core.sdk;
 
-public abstract class SdkRequest {
+import java.net.URI;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
+@Data
+@Builder(builderMethodName = "sdkBuilder")
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+@Accessors(fluent = true, chain = true)
+public class SdkServiceClientConfiguration {
+  private URI endpointOverride;
 }

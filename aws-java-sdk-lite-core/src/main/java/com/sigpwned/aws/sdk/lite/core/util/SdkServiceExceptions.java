@@ -19,8 +19,8 @@
  */
 package com.sigpwned.aws.sdk.lite.core.util;
 
-import com.sigpwned.aws.sdk.lite.core.SdkServiceException;
 import com.sigpwned.aws.sdk.lite.core.model.ErrorMessage;
+import com.sigpwned.aws.sdk.lite.core.sdk.SdkServiceException;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequestHead;
 import com.sigpwned.httpmodel.core.model.ModelHttpResponseHead;
 

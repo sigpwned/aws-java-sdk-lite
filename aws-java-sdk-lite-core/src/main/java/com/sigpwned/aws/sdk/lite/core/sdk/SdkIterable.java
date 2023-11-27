@@ -17,20 +17,13 @@
  * limitations under the License.
  * ==================================LICENSE_END===================================
  */
-package com.sigpwned.aws.sdk.lite.core.http;
+package com.sigpwned.aws.sdk.lite.core.sdk;
 
-import com.sigpwned.aws.sdk.lite.core.sdk.SdkResponse;
-import com.sigpwned.httpmodel.client.bean.ModelHttpBeanClientResponseFilter;
-import com.sigpwned.httpmodel.core.model.ModelHttpRequestHead;
-import com.sigpwned.httpmodel.core.model.ModelHttpResponseHead;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-public class SdkResponseDecoratingBeanHttpResponseFilter implements ModelHttpBeanClientResponseFilter {
-  @Override
-  public void filter(ModelHttpRequestHead httpRequestHead, Object requestBean,
-      ModelHttpResponseHead httpResponseHead, Object responseBean) {
-    if (responseBean != null && responseBean instanceof SdkResponse) {
-      SdkResponse sdkResponseBean = (SdkResponse) responseBean;
-      sdkResponseBean.modelHttpResponse(httpResponseHead);
-    }
+public interface SdkIterable<T> extends Iterable<T> {
+  default Stream<T> stream() {
+    return StreamSupport.stream(spliterator(), false);
   }
 }

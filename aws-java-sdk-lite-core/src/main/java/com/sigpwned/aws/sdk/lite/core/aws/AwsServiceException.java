@@ -17,20 +17,25 @@
  * limitations under the License.
  * ==================================LICENSE_END===================================
  */
-package com.sigpwned.aws.sdk.lite.core.credentials.provider;
+package com.sigpwned.aws.sdk.lite.core.aws;
 
-import java.util.Arrays;
+import com.sigpwned.aws.sdk.lite.core.model.AwsErrorDetails;
+import com.sigpwned.aws.sdk.lite.core.sdk.SdkServiceException;
 
-/**
- * https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/DefaultAWSCredentialsProviderChain.html
- */
-public class DefaultAwsCredentialsProviderChain extends AwsCredentialsProviderChain {
-  public static final DefaultAwsCredentialsProviderChain getInstance() {
-    return new DefaultAwsCredentialsProviderChain();
+public abstract class AwsServiceException extends SdkServiceException {
+  private static final long serialVersionUID = -1224341353156716684L;
+
+  private AwsErrorDetails awsErrorDetails;
+
+  public AwsServiceException(String message) {
+    super(message);
   }
 
-  public DefaultAwsCredentialsProviderChain() {
-    super(Arrays.asList(new EnvironmentVariableCredentialsProvider(),
-        new SystemPropertiesCredentialsProvider()));
+  public AwsErrorDetails awsErrorDetails() {
+    return awsErrorDetails;
+  }
+
+  public void awsErrorDetails(AwsErrorDetails awsErrorDetails) {
+    this.awsErrorDetails = awsErrorDetails;
   }
 }

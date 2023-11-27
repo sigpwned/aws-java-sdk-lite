@@ -23,12 +23,14 @@ import static java.util.Objects.requireNonNull;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import com.sigpwned.aws.sdk.lite.core.Endpoint;
-import com.sigpwned.aws.sdk.lite.core.client.AwsClient;
-import com.sigpwned.aws.sdk.lite.core.credentials.provider.AwsCredentialsProvider;
-import com.sigpwned.aws.sdk.lite.core.credentials.provider.DefaultAwsCredentialsProviderChain;
+import com.sigpwned.aws.sdk.lite.core.auth.AwsCredentialsProvider;
+import com.sigpwned.aws.sdk.lite.core.auth.credentials.provider.DefaultAwsCredentialsProviderChain;
+import com.sigpwned.aws.sdk.lite.core.aws.AwsServiceClientBase;
+import com.sigpwned.aws.sdk.lite.core.aws.AwsServiceClientConfiguration;
 import com.sigpwned.aws.sdk.lite.core.io.AbortableInputStream;
 import com.sigpwned.aws.sdk.lite.core.io.RequestBody;
 import com.sigpwned.aws.sdk.lite.core.io.ResponseInputStream;
@@ -84,7 +86,7 @@ import com.sigpwned.httpmodel.core.model.ModelHttpRequestHeadBuilder;
 import com.sigpwned.httpmodel.core.model.ModelHttpUrl;
 import com.sigpwned.httpmodel.core.util.ModelHttpMethods;
 
-public class DefaultS3Client extends AwsClient implements S3Client {
+public class DefaultS3Client extends AwsServiceClientBase implements S3Client {
   private final S3EndpointProvider endpointProvider;
 
   public DefaultS3Client() {
@@ -92,19 +94,20 @@ public class DefaultS3Client extends AwsClient implements S3Client {
   }
 
   public DefaultS3Client(AwsCredentialsProvider credentialsProvider) {
-    this(new DefaultModelHttpBeanClient(), credentialsProvider,
-        AwsRegions.findDefaultRegion().orElseThrow(), S3EndpointProvider.defaultProvider());
+    this(credentialsProvider, null, AwsRegions.findDefaultRegion().orElseThrow(),
+        S3EndpointProvider.defaultProvider());
   }
 
-  public DefaultS3Client(AwsCredentialsProvider credentialsProvider, String region,
-      S3EndpointProvider endpointProvider) {
-    this(new DefaultModelHttpBeanClient(), credentialsProvider, region, endpointProvider);
+  public DefaultS3Client(AwsCredentialsProvider credentialsProvider, URI endpointOverride,
+      String region, S3EndpointProvider endpointProvider) {
+    this(new DefaultModelHttpBeanClient(), credentialsProvider, endpointOverride, region,
+        endpointProvider);
   }
 
   /* default */ DefaultS3Client(ModelHttpBeanClient client,
-      AwsCredentialsProvider credentialsProvider, String region,
+      AwsCredentialsProvider credentialsProvider, URI endpointOverride, String region,
       S3EndpointProvider endpointProvider) {
-    super(client, credentialsProvider, region, S3.SERVICE_NAME);
+    super(client, credentialsProvider, endpointOverride, region, S3.SERVICE_NAME);
     this.endpointProvider = requireNonNull(endpointProvider);
     getClient().registerRequestMapper(new CreateBucketRequestMapper());
     getClient().registerResponseMapper(new CreateBucketResponseMapper());
@@ -273,6 +276,21 @@ public class DefaultS3Client extends AwsClient implements S3Client {
       }
     }
 
-    return ModelHttpRequestHead.builder().url(ModelHttpUrl.fromUri(endpoint.url()));
+    URI url = endpoint.url();
+    if (getEndpointOverride() != null)
+      url = getEndpointOverride();
+
+    return ModelHttpRequestHead.builder().url(ModelHttpUrl.fromUri(url));
+  }
+
+  @Override
+  public AwsServiceClientConfiguration serviceClientConfiguration() {
+    return AwsServiceClientConfiguration.awsBuilder().credentialsProvider(getCredentialsProvider())
+        .region(getRegion()).endpointOverride(getEndpointOverride()).build();
+  }
+
+  @Override
+  public String serviceName() {
+    return S3.SERVICE_NAME;
   }
 }

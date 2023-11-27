@@ -19,7 +19,7 @@
  */
 package com.sigpwned.aws.sdk.lite.s3.exception;
 
-import com.sigpwned.aws.sdk.lite.core.AwsEndpoint;
+import com.sigpwned.aws.sdk.lite.core.aws.AwsEndpoint;
 import com.sigpwned.aws.sdk.lite.s3.S3Exception;
 
 public class PermanentRedirectS3Exception extends S3Exception {

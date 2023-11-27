@@ -17,20 +17,40 @@
  * limitations under the License.
  * ==================================LICENSE_END===================================
  */
-package com.sigpwned.aws.sdk.lite.core.http;
+package com.sigpwned.aws.sdk.lite.core.sdk;
 
-import com.sigpwned.aws.sdk.lite.core.sdk.SdkResponse;
-import com.sigpwned.httpmodel.client.bean.ModelHttpBeanClientResponseFilter;
-import com.sigpwned.httpmodel.core.model.ModelHttpRequestHead;
-import com.sigpwned.httpmodel.core.model.ModelHttpResponseHead;
+public abstract class SdkServiceException extends SdkException {
+  private static final long serialVersionUID = 1089432262818299913L;
 
-public class SdkResponseDecoratingBeanHttpResponseFilter implements ModelHttpBeanClientResponseFilter {
-  @Override
-  public void filter(ModelHttpRequestHead httpRequestHead, Object requestBean,
-      ModelHttpResponseHead httpResponseHead, Object responseBean) {
-    if (responseBean != null && responseBean instanceof SdkResponse) {
-      SdkResponse sdkResponseBean = (SdkResponse) responseBean;
-      sdkResponseBean.modelHttpResponse(httpResponseHead);
-    }
+  private int statusCode;
+  private String requestId;
+  private String extendedRequestId;
+
+  public SdkServiceException(String message) {
+    super(message);
+  }
+
+  public int statusCode() {
+    return statusCode;
+  }
+
+  public void statusCode(int statusCode) {
+    this.statusCode = statusCode;
+  }
+
+  public String requestId() {
+    return requestId;
+  }
+
+  public void requestId(String requestId) {
+    this.requestId = requestId;
+  }
+
+  public String extendedRequestId() {
+    return extendedRequestId;
+  }
+
+  public void extendedRequestId(String extendedRequestId) {
+    this.extendedRequestId = extendedRequestId;
   }
 }

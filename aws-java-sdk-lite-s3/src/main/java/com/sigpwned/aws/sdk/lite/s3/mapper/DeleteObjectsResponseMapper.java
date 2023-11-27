@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,9 +25,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import com.sigpwned.aws.sdk.lite.s3.model.DeleteObjectsResponse;
 import com.sigpwned.aws.sdk.lite.s3.model.DeletedObject;
 import com.sigpwned.aws.sdk.lite.s3.model.S3Error;
+import com.sigpwned.aws.sdk.lite.s3.util.XmlHandling;
 import com.sigpwned.httpmodel.client.bean.ModelHttpBeanClientResponseMapper;
 import com.sigpwned.httpmodel.core.model.ModelHttpHeaders;
 import com.sigpwned.httpmodel.core.model.ModelHttpHeaders.Header;
@@ -35,9 +38,6 @@ import com.sigpwned.httpmodel.core.model.ModelHttpMediaType;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequestHead;
 import com.sigpwned.httpmodel.core.model.ModelHttpResponse;
 import com.sigpwned.httpmodel.core.util.ModelHttpStatusCodes;
-import com.sigpwned.millidata.xml.XmlReader;
-import com.sigpwned.millidata.xml.model.Document;
-import com.sigpwned.millidata.xml.model.node.Element;
 
 public class DeleteObjectsResponseMapper
     implements ModelHttpBeanClientResponseMapper<DeleteObjectsResponse> {
@@ -58,9 +58,9 @@ public class DeleteObjectsResponseMapper
       if (httpResponse.getStatusCode() != ModelHttpStatusCodes.OK)
         throw new IOException("generic failure");
 
-      Document document = new XmlReader(entityText).document();
+      Document doc = XmlHandling.parseDocument(entityText);
 
-      DeleteResult deleteResult = deleteResult(document.getRoot());
+      DeleteResult deleteResult = deleteResult(doc);
 
       ModelHttpHeaders hs = httpResponse.getHeaders();
       return DeleteObjectsResponse.builder().deleted(deleteResult.getDeleteds())
@@ -113,19 +113,23 @@ public class DeleteObjectsResponseMapper
     }
   }
 
+  private DeleteResult deleteResult(Document doc) {
+    return deleteResult(doc.getDocumentElement());
+  }
+
   /* default */ DeleteResult deleteResult(Element element) {
-    if (!element.getLocalName().equals("DeleteResult"))
+    if (!element.getNodeName().equals("DeleteResult"))
       throw new IllegalArgumentException("element must have localName DeleteResult");
 
     List<DeletedObject> deleteds = new ArrayList<>();
     List<S3Error> errors = new ArrayList<>();
-    element.getChildren().elements().forEach(e -> {
-      switch (e.getLocalName()) {
+    XmlHandling.forEachChildElement(element, childElement -> {
+      switch (childElement.getNodeName()) {
         case "Deleted":
-          deleteds.add(deletedObject(e));
+          deleteds.add(deletedObject(childElement));
           break;
         case "Error":
-          errors.add(error(e));
+          errors.add(error(childElement));
           break;
         default:
           // Ignore anything we don't recognize...
@@ -137,23 +141,23 @@ public class DeleteObjectsResponseMapper
   }
 
   private DeletedObject deletedObject(Element element) {
-    if (!element.getLocalName().equals("Deleted"))
+    if (!element.getNodeName().equals("Deleted"))
       throw new IllegalArgumentException("element must have localName Deleted");
 
     DeletedObject result = new DeletedObject();
-    element.getChildren().elements().forEach(e -> {
-      switch (e.getLocalName()) {
+    XmlHandling.forEachChildElement(element, childElement -> {
+      switch (childElement.getNodeName()) {
         case "Key":
-          result.key(e.getText());
+          result.key(childElement.getTextContent());
           break;
         case "DeleteMarker":
-          result.deleteMarker(Boolean.parseBoolean(e.getText()));
+          result.deleteMarker(Boolean.parseBoolean(childElement.getTextContent()));
           break;
         case "DeleteMarkerVersionId":
-          result.deleteMarkerVersionId(e.getText());
+          result.deleteMarkerVersionId(childElement.getTextContent());
           break;
         case "VersionId":
-          result.versionId(e.getText());
+          result.versionId(childElement.getTextContent());
           break;
         default:
           // Ignore anything we don't recognize...
@@ -165,20 +169,20 @@ public class DeleteObjectsResponseMapper
   }
 
   private S3Error error(Element element) {
-    if (!element.getLocalName().equals("Error"))
+    if (!element.getNodeName().equals("Error"))
       throw new IllegalArgumentException("element must have localName Error");
 
     S3Error result = new S3Error();
-    element.getChildren().elements().forEach(e -> {
-      switch (e.getLocalName()) {
+    XmlHandling.forEachChildElement(element, childElement -> {
+      switch (childElement.getNodeName()) {
         case "Key":
-          result.key(e.getText());
+          result.key(childElement.getTextContent());
           break;
         case "Code":
-          result.code(e.getText());
+          result.code(childElement.getTextContent());
           break;
         case "Message":
-          result.message(e.getText());
+          result.message(childElement.getTextContent());
           break;
         default:
           // Ignore anything we don't recognize...

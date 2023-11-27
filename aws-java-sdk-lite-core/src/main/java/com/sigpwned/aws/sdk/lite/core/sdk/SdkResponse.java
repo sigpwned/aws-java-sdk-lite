@@ -17,7 +17,7 @@
  * limitations under the License.
  * ==================================LICENSE_END===================================
  */
-package com.sigpwned.aws.sdk.lite.core;
+package com.sigpwned.aws.sdk.lite.core.sdk;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableMap;

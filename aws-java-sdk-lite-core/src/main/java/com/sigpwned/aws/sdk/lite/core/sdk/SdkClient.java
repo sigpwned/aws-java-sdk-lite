@@ -17,13 +17,13 @@
  * limitations under the License.
  * ==================================LICENSE_END===================================
  */
-package com.sigpwned.aws.sdk.lite.core.pagination;
+package com.sigpwned.aws.sdk.lite.core.sdk;
 
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+public interface SdkClient extends AutoCloseable {
+  public String serviceName();
 
-public interface SdkIterable<T> extends Iterable<T> {
-  default Stream<T> stream() {
-    return StreamSupport.stream(spliterator(), false);
-  }
+  public SdkServiceClientConfiguration serviceClientConfiguration();
+
+  @Override
+  public void close();
 }

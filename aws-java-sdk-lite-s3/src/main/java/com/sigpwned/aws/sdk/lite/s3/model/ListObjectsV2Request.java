@@ -21,7 +21,7 @@ package com.sigpwned.aws.sdk.lite.s3.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.sigpwned.aws.sdk.lite.core.SdkRequest;
+import com.sigpwned.aws.sdk.lite.core.sdk.SdkRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

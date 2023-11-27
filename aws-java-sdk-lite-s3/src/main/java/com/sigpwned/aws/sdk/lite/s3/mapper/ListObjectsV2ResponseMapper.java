@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,17 +23,17 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import com.sigpwned.aws.sdk.lite.s3.model.CommonPrefix;
 import com.sigpwned.aws.sdk.lite.s3.model.ListObjectsV2Response;
 import com.sigpwned.aws.sdk.lite.s3.model.S3Object;
+import com.sigpwned.aws.sdk.lite.s3.util.XmlHandling;
 import com.sigpwned.httpmodel.client.bean.ModelHttpBeanClientResponseMapper;
 import com.sigpwned.httpmodel.core.model.ModelHttpMediaType;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequestHead;
 import com.sigpwned.httpmodel.core.model.ModelHttpResponse;
 import com.sigpwned.httpmodel.core.util.ModelHttpStatusCodes;
-import com.sigpwned.millidata.xml.XmlReader;
-import com.sigpwned.millidata.xml.model.Document;
-import com.sigpwned.millidata.xml.model.node.Element;
 
 public class ListObjectsV2ResponseMapper
     implements ModelHttpBeanClientResponseMapper<ListObjectsV2Response> {
@@ -51,62 +51,65 @@ public class ListObjectsV2ResponseMapper
 
       String entityText = httpResponse.toString(StandardCharsets.UTF_8);
 
-      System.out.println(entityText);
-
       // TODO Generic failure?
       if (httpResponse.getStatusCode() != ModelHttpStatusCodes.OK)
         throw new IOException("generic failure");
 
-      Document doc = new XmlReader(entityText).document();
+      Document doc = XmlHandling.parseDocument(entityText);
 
-      return listObjectsV2Response(doc.getRoot());
+      return listObjectsV2Response(doc);
     } finally {
       httpResponse.close();
     }
   }
 
-  private ListObjectsV2Response listObjectsV2Response(Element root) {
+  /* default */ ListObjectsV2Response listObjectsV2Response(Document doc) {
+    return listObjectsV2Response(doc.getDocumentElement());
+  }
+
+  private ListObjectsV2Response listObjectsV2Response(Element element) {
     final ListObjectsV2Response result = new ListObjectsV2Response();
-    root.getChildren().elements().forEach(e -> {
-      switch (e.getLocalName()) {
+
+    XmlHandling.forEachChildElement(element, childElement -> {
+      switch (childElement.getNodeName()) {
         case "CommonPrefixes":
           if (result.commonPrefixes() == null)
             result.commonPrefixes(new ArrayList<>());
-          result.commonPrefixes().add(commonPrefix(e));
+          result.commonPrefixes().add(commonPrefix(childElement));
           break;
         case "Contents":
           if (result.contents() == null)
             result.contents(new ArrayList<>());
-          result.contents().add(content(e));
+          result.contents().add(content(childElement));
           break;
         case "Delimiter":
-          result.delimiter(e.getText());
+          result.delimiter(childElement.getTextContent());
         case "EncodingType":
-          result.encodingType(e.getText());
+          result.encodingType(childElement.getTextContent());
           break;
         case "KeyCount":
-          result.keyCount(Integer.parseInt(e.getText()));
+          result.keyCount(Integer.parseInt(childElement.getTextContent()));
           break;
         case "MaxKeys":
-          result.maxKeys(Integer.parseInt(e.getText()));
+          result.maxKeys(Integer.parseInt(childElement.getTextContent()));
           break;
         case "Name":
-          result.name(e.getText());
+          result.name(childElement.getTextContent());
           break;
         case "NextContinuationToken":
-          result.nextContinuationToken(e.getText());
+          result.nextContinuationToken(childElement.getTextContent());
           break;
         case "Prefix":
-          result.prefix(e.getText());
+          result.prefix(childElement.getTextContent());
           break;
         case "RequestCharged":
-          result.requestCharged(e.getText());
+          result.requestCharged(childElement.getTextContent());
           break;
         case "StartAfter":
-          result.startAfter(e.getText());
+          result.startAfter(childElement.getTextContent());
           break;
         case "IsTruncated":
-          result.truncated(Boolean.parseBoolean(e.getText()));
+          result.truncated(Boolean.parseBoolean(childElement.getTextContent()));
           break;
         default:
           // Ignore anything we don't recognize...
@@ -116,15 +119,15 @@ public class ListObjectsV2ResponseMapper
     return result;
   }
 
-  private CommonPrefix commonPrefix(Element root) {
-    if (!root.getLocalName().equals("CommonPrefixes"))
+  private CommonPrefix commonPrefix(Element element) {
+    if (!element.getNodeName().equals("CommonPrefixes"))
       throw new IllegalArgumentException("element must have localName CommonPrefixes");
 
     final CommonPrefix result = new CommonPrefix();
-    root.getChildren().elements().forEach(e -> {
-      switch (e.getLocalName()) {
+    XmlHandling.forEachChildElement(element, childElement -> {
+      switch (childElement.getNodeName()) {
         case "Prefix":
-          result.prefix(e.getText());
+          result.prefix(childElement.getTextContent());
           break;
         default:
           // Ignore anything we don't recognize...
@@ -135,27 +138,27 @@ public class ListObjectsV2ResponseMapper
     return result;
   }
 
-  private S3Object content(Element root) {
-    if (!root.getLocalName().equals("Contents"))
+  private S3Object content(Element element) {
+    if (!element.getNodeName().equals("Contents"))
       throw new IllegalArgumentException("element must have localName Contents");
 
     final S3Object result = new S3Object();
-    root.getChildren().elements().forEach(e -> {
-      switch (e.getLocalName()) {
+    XmlHandling.forEachChildElement(element, childElement -> {
+      switch (childElement.getNodeName()) {
         case "Key":
-          result.key(e.getText());
+          result.key(childElement.getTextContent());
           break;
         case "LastModified":
-          result.lastModified(Instant.parse(e.getText()));
+          result.lastModified(Instant.parse(childElement.getTextContent()));
           break;
         case "ETag":
-          result.eTag(e.getText());
+          result.eTag(childElement.getTextContent());
           break;
         case "Size":
-          result.size(Long.parseLong(e.getText()));
+          result.size(Long.parseLong(childElement.getTextContent()));
           break;
         case "StorageClass":
-          result.storageClass(e.getText());
+          result.storageClass(childElement.getTextContent());
           break;
         default:
           // Ignore anything we don't recognize...

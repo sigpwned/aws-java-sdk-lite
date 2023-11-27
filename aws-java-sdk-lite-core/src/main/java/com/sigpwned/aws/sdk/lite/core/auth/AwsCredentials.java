@@ -17,24 +17,22 @@
  * limitations under the License.
  * ==================================LICENSE_END===================================
  */
-package com.sigpwned.aws.sdk.lite.core;
+package com.sigpwned.aws.sdk.lite.core.auth;
 
-import com.sigpwned.aws.sdk.lite.core.model.AwsErrorDetails;
+import com.sigpwned.aws.sdk.lite.core.auth.credentials.AwsBasicCredentials;
 
-public abstract class AwsServiceException extends SdkServiceException {
-  private static final long serialVersionUID = -1224341353156716684L;
-
-  private AwsErrorDetails awsErrorDetails;
-
-  public AwsServiceException(String message) {
-    super(message);
+public interface AwsCredentials {
+  public static AwsCredentials of(String accessKeyId, String secretAccessKey) {
+    return AwsBasicCredentials.of(accessKeyId, secretAccessKey);
   }
 
-  public AwsErrorDetails awsErrorDetails() {
-    return awsErrorDetails;
-  }
+  /**
+   * Retrieve the AWS access key, used to identify the user interacting with services.
+   */
+  public String accessKeyId();
 
-  public void awsErrorDetails(AwsErrorDetails awsErrorDetails) {
-    this.awsErrorDetails = awsErrorDetails;
-  }
+  /**
+   * Retrieve the AWS secret access key, used to authenticate the user interacting with services.
+   */
+  public String secretAccessKey();
 }

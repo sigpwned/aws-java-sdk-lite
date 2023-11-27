@@ -20,8 +20,8 @@
 package com.sigpwned.aws.sdk.lite.core.util;
 
 import java.util.Optional;
-import com.sigpwned.aws.sdk.lite.core.AwsEndpoint;
-import com.sigpwned.aws.sdk.lite.core.AwsServiceException;
+import com.sigpwned.aws.sdk.lite.core.aws.AwsEndpoint;
+import com.sigpwned.aws.sdk.lite.core.aws.AwsServiceException;
 import com.sigpwned.aws.sdk.lite.core.http.SdkHttpResponse;
 import com.sigpwned.aws.sdk.lite.core.model.AwsErrorDetails;
 import com.sigpwned.aws.sdk.lite.core.model.ErrorMessage;

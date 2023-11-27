@@ -1,8 +1,8 @@
 /*-
  * =================================LICENSE_START==================================
- * httpmodel-aws
+ * aws-java-sdk-lite-core
  * ====================================SECTION=====================================
- * Copyright (C) 2022 - 2023 Andy Boothe
+ * Copyright (C) 2023 Andy Boothe
  * ====================================SECTION=====================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,24 +17,11 @@
  * limitations under the License.
  * ==================================LICENSE_END===================================
  */
-package com.sigpwned.aws.sdk.lite.core.credentials.provider;
+package com.sigpwned.aws.sdk.lite.core.aws;
 
-import com.sigpwned.aws.sdk.lite.core.credentials.AwsCredentials;
+import com.sigpwned.aws.sdk.lite.core.sdk.SdkClient;
 
-@FunctionalInterface
-public interface AwsCredentialsProvider {
-  /**
-   * Returns {@link AwsCredentials} that can be used to authorize an AWS request. Each
-   * implementation of AWSCredentialsProvider can choose its own strategy for loading credentials.
-   * For example, an implementation might load credentials from an existing key management system,
-   * or load new credentials when credentials are rotated.
-   *
-   * <p>
-   * If an error occurs during the loading of credentials or credentials could not be found, a
-   * runtime exception will be raised.
-   * </p>
-   *
-   * @return AwsCredentials which the caller can use to authorize an AWS request.
-   */
-  public AwsCredentials resolveCredentials();
+public interface AwsClient extends SdkClient {
+  @Override
+  public AwsServiceClientConfiguration serviceClientConfiguration();
 }

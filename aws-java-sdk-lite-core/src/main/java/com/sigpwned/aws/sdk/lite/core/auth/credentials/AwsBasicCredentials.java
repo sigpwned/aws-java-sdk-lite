@@ -17,21 +17,24 @@
  * limitations under the License.
  * ==================================LICENSE_END===================================
  */
-package com.sigpwned.aws.sdk.lite.core.credentials;
+package com.sigpwned.aws.sdk.lite.core.auth.credentials;
 
 import java.util.Objects;
+import com.sigpwned.aws.sdk.lite.core.auth.AwsCredentials;
 
-public class AwsSessionCredentials implements AwsCredentials {
-  public static AwsSessionCredentials of(String accessKeyId, String secretAccessKey,
-      String sessionToken) {
-    return new AwsSessionCredentials(accessKeyId, secretAccessKey, sessionToken);
+public class AwsBasicCredentials implements AwsCredentials {
+  public static AwsBasicCredentials of(String accessKeyId, String secretAccessKey) {
+    return new AwsBasicCredentials(accessKeyId, secretAccessKey);
+  }
+
+  public static AwsBasicCredentials create(String accessKeyId, String secretAccessKey) {
+    return of(accessKeyId, secretAccessKey);
   }
 
   private final String accessKeyId;
   private final String secretAccessKey;
-  private final String sessionToken;
 
-  public AwsSessionCredentials(String accessKeyId, String secretAccessKey, String sessionToken) {
+  public AwsBasicCredentials(String accessKeyId, String secretAccessKey) {
     if (accessKeyId == null)
       throw new NullPointerException();
     accessKeyId = accessKeyId.trim();
@@ -45,13 +48,6 @@ public class AwsSessionCredentials implements AwsCredentials {
     if (secretAccessKey.isEmpty())
       throw new IllegalArgumentException("secretAccessKey must not be empty");
     this.secretAccessKey = secretAccessKey;
-
-    if (sessionToken == null)
-      throw new NullPointerException();
-    sessionToken = sessionToken.trim();
-    if (sessionToken.isEmpty())
-      throw new IllegalArgumentException("sessionToken must not be empty");
-    this.sessionToken = sessionToken;
   }
 
   @Override
@@ -64,13 +60,9 @@ public class AwsSessionCredentials implements AwsCredentials {
     return secretAccessKey;
   }
 
-  public String sessionToken() {
-    return sessionToken;
-  }
-
   @Override
   public int hashCode() {
-    return Objects.hash(accessKeyId, secretAccessKey, sessionToken);
+    return Objects.hash(accessKeyId, secretAccessKey);
   }
 
   @Override
@@ -81,14 +73,13 @@ public class AwsSessionCredentials implements AwsCredentials {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    AwsSessionCredentials other = (AwsSessionCredentials) obj;
+    AwsBasicCredentials other = (AwsBasicCredentials) obj;
     return Objects.equals(accessKeyId, other.accessKeyId)
-        && Objects.equals(secretAccessKey, other.secretAccessKey)
-        && Objects.equals(sessionToken, other.sessionToken);
+        && Objects.equals(secretAccessKey, other.secretAccessKey);
   }
 
   @Override
   public String toString() {
-    return "AwsSessionCredentials";
+    return "AwsBasicCredentials";
   }
 }

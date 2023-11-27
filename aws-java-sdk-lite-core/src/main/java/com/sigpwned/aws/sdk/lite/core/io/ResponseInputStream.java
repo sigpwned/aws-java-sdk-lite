@@ -21,7 +21,6 @@ package com.sigpwned.aws.sdk.lite.core.io;
 
 import java.io.FilterInputStream;
 import java.io.InputStream;
-import com.sigpwned.aws.sdk.lite.core.Abortable;
 
 public class ResponseInputStream<ResponseT> extends FilterInputStream implements Abortable {
   private final Abortable abortable;

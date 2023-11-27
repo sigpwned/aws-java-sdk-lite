@@ -19,8 +19,8 @@
  */
 package com.sigpwned.aws.sdk.lite.s3;
 
-import com.sigpwned.aws.sdk.lite.core.client.AwsClientBuilder;
-import com.sigpwned.aws.sdk.lite.core.credentials.provider.AwsCredentialsProvider;
+import com.sigpwned.aws.sdk.lite.core.auth.AwsCredentialsProvider;
+import com.sigpwned.aws.sdk.lite.core.aws.client.AwsClientBuilder;
 
 public abstract class S3ClientBuilder extends AwsClientBuilder {
   private S3EndpointProvider endpointProvider = S3EndpointProvider.defaultProvider();

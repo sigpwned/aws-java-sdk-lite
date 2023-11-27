@@ -17,20 +17,20 @@
  * limitations under the License.
  * ==================================LICENSE_END===================================
  */
-package com.sigpwned.aws.sdk.lite.core.http;
+package com.sigpwned.aws.sdk.lite.core.sdk;
 
-import com.sigpwned.aws.sdk.lite.core.sdk.SdkResponse;
-import com.sigpwned.httpmodel.client.bean.ModelHttpBeanClientResponseFilter;
-import com.sigpwned.httpmodel.core.model.ModelHttpRequestHead;
-import com.sigpwned.httpmodel.core.model.ModelHttpResponseHead;
+public class SdkClientException extends SdkException {
+  private static final long serialVersionUID = -7597201441039758362L;
 
-public class SdkResponseDecoratingBeanHttpResponseFilter implements ModelHttpBeanClientResponseFilter {
-  @Override
-  public void filter(ModelHttpRequestHead httpRequestHead, Object requestBean,
-      ModelHttpResponseHead httpResponseHead, Object responseBean) {
-    if (responseBean != null && responseBean instanceof SdkResponse) {
-      SdkResponse sdkResponseBean = (SdkResponse) responseBean;
-      sdkResponseBean.modelHttpResponse(httpResponseHead);
-    }
+  public SdkClientException(String message) {
+    super(message);
+  }
+
+  public SdkClientException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  public SdkClientException(Throwable cause) {
+    super(cause);
   }
 }

@@ -20,8 +20,8 @@
 package com.sigpwned.aws.sdk.lite.s3;
 
 import java.net.URI;
-import com.sigpwned.aws.sdk.lite.core.AwsEndpoint;
 import com.sigpwned.aws.sdk.lite.core.Endpoint;
+import com.sigpwned.aws.sdk.lite.core.aws.AwsEndpoint;
 import com.sigpwned.aws.sdk.lite.core.util.AwsEndpoints;
 import com.sigpwned.aws.sdk.lite.s3.util.S3;
 

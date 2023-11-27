@@ -20,7 +20,7 @@
 package com.sigpwned.aws.sdk.lite.core.http;
 
 import java.io.IOException;
-import com.sigpwned.aws.sdk.lite.core.AwsSigner;
+import com.sigpwned.aws.sdk.lite.core.aws.AwsSigner;
 import com.sigpwned.httpmodel.client.ModelHttpRequestInterceptor;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequest;
 

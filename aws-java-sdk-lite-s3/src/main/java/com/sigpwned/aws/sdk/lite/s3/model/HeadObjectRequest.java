@@ -20,8 +20,8 @@
 package com.sigpwned.aws.sdk.lite.s3.model;
 
 import java.time.Instant;
-import com.sigpwned.aws.sdk.lite.core.SdkRequest;
 import com.sigpwned.aws.sdk.lite.core.model.Range;
+import com.sigpwned.aws.sdk.lite.core.sdk.SdkRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

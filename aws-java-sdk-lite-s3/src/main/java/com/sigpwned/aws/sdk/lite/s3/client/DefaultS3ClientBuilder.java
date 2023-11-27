@@ -19,14 +19,16 @@
  */
 package com.sigpwned.aws.sdk.lite.s3.client;
 
-import com.sigpwned.aws.sdk.lite.core.credentials.provider.AwsCredentialsProvider;
+import java.net.URI;
+import com.sigpwned.aws.sdk.lite.core.auth.AwsCredentialsProvider;
 import com.sigpwned.aws.sdk.lite.s3.S3ClientBuilder;
 import com.sigpwned.aws.sdk.lite.s3.S3EndpointProvider;
 
 public class DefaultS3ClientBuilder extends S3ClientBuilder {
   @Override
   public DefaultS3Client build() {
-    return new DefaultS3Client(credentialsProvider(), region(), endpointProvider());
+    return new DefaultS3Client(credentialsProvider(), endpointOverride(), region(),
+        endpointProvider());
   }
 
   @Override
@@ -42,5 +44,10 @@ public class DefaultS3ClientBuilder extends S3ClientBuilder {
   @Override
   public DefaultS3ClientBuilder region(String region) {
     return (DefaultS3ClientBuilder) super.region(region);
+  }
+
+  @Override
+  public DefaultS3ClientBuilder endpointOverride(URI endpointOverride) {
+    return (DefaultS3ClientBuilder) super.endpointOverride(endpointOverride);
   }
 }

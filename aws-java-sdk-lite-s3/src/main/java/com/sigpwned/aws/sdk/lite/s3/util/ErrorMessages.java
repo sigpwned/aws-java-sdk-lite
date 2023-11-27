@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,11 +20,10 @@
 package com.sigpwned.aws.sdk.lite.s3.util;
 
 import java.io.IOException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import com.sigpwned.aws.sdk.lite.core.model.ErrorMessage;
 import com.sigpwned.aws.sdk.lite.core.model.ErrorMessage.ErrorMessageBuilder;
-import com.sigpwned.millidata.xml.XmlReader;
-import com.sigpwned.millidata.xml.model.Document;
-import com.sigpwned.millidata.xml.model.node.Element;
 
 public final class ErrorMessages {
   private ErrorMessages() {}
@@ -44,35 +43,35 @@ public final class ErrorMessages {
   public static final String CODE_BUCKET_ALREADY_OWNED_BY_YOU = "BucketAlreadyOwnedByYou";
 
   public static ErrorMessage fromString(String xml) throws IOException {
-    return fromXml(new XmlReader(xml).document());
+    return fromXml(XmlHandling.parseDocument(xml));
   }
 
   public static ErrorMessage fromXml(Document doc) {
-    return fromXml(doc.getRoot());
+    return fromXml(doc.getDocumentElement());
   }
 
   public static ErrorMessage fromXml(Element root) {
-    if (!root.getLocalName().equals("Error"))
+    if (!root.getNodeName().equals("Error"))
       throw new IllegalArgumentException("element must have localName Error");
 
     final ErrorMessageBuilder result = ErrorMessage.builder();
-    root.getChildren().elements().forEach(e -> {
-      switch (e.getLocalName()) {
+    XmlHandling.forEachChildElement(root, childElement -> {
+      switch (childElement.getNodeName()) {
         case "Code":
-          result.code(e.getText());
+          result.code(childElement.getTextContent());
           break;
         case "Message":
-          result.message(e.getText());
+          result.message(childElement.getTextContent());
           break;
         case "RequestId":
-          result.requestId(e.getText());
+          result.requestId(childElement.getTextContent());
           break;
         case "HostId":
-          result.hostId(e.getText());
+          result.hostId(childElement.getTextContent());
           break;
         default:
           // Everything else goes into additionalProperties
-          result.additionalProperty(e.getLocalName(), e.getText());
+          result.additionalProperty(childElement.getNodeName(), childElement.getTextContent());
           break;
       }
     });

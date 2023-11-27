@@ -22,7 +22,7 @@ package com.sigpwned.aws.sdk.lite.s3.model;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import com.sigpwned.aws.sdk.lite.core.pagination.SdkIterable;
+import com.sigpwned.aws.sdk.lite.core.sdk.SdkIterable;
 import com.sigpwned.aws.sdk.lite.s3.S3Client;
 import com.sigpwned.aws.sdk.lite.s3.model.ListObjectsV2Request.ListObjectsV2RequestBuilder;
 

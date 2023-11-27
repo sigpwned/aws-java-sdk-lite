@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,23 +20,18 @@
 package com.sigpwned.aws.sdk.lite.s3.mapper;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import com.sigpwned.aws.sdk.lite.s3.http.XmlModelHttpEntity;
 import com.sigpwned.aws.sdk.lite.s3.model.CreateBucketConfiguration;
 import com.sigpwned.aws.sdk.lite.s3.model.CreateBucketRequest;
+import com.sigpwned.aws.sdk.lite.s3.util.XmlHandling;
 import com.sigpwned.httpmodel.client.bean.ModelHttpBeanClientRequestMapper;
 import com.sigpwned.httpmodel.core.model.ModelHttpMediaType;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequest;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequestHead;
 import com.sigpwned.httpmodel.core.util.ModelHttpMethods;
-import com.sigpwned.millidata.xml.model.Attribute;
-import com.sigpwned.millidata.xml.model.Attributes;
-import com.sigpwned.millidata.xml.model.Node;
-import com.sigpwned.millidata.xml.model.Nodes;
-import com.sigpwned.millidata.xml.model.node.Element;
-import com.sigpwned.millidata.xml.model.node.Text;
 
 public class CreateBucketRequestMapper
     implements ModelHttpBeanClientRequestMapper<CreateBucketRequest> {
@@ -67,19 +62,35 @@ public class CreateBucketRequestMapper
                 .orElse(null))
         .setOnlyHeader("x-amz-object-ownership",
             Optional.ofNullable(request.objectOwnership()).map(Object::toString).orElse(null))
-        .done().build().toRequest(
-            new XmlModelHttpEntity(createBucketConfiguration(request.createBucketConfiguration())));
+        .done().build().toRequest(new XmlModelHttpEntity(
+            createBucketConfigurationDocument(request.createBucketConfiguration())));
   }
 
-  /* default */ Element createBucketConfiguration(CreateBucketConfiguration value) {
-    List<Node> children = new ArrayList<>(1);
+  /* default */ Document createBucketConfigurationDocument(CreateBucketConfiguration value) {
+    Document doc = newDocument();
 
-    if (value != null && value.locationConstraint() != null)
-      children
-          .add(new Element("LocationConstraint", Nodes.of(new Text(value.locationConstraint()))));
+    doc.appendChild(createBucketConfiguration(doc, value));
 
-    return new Element(null, "CreateBucketConfiguration",
-        Attributes.of(new Attribute("xmlns", "http://s3.amazonaws.com/doc/2006-03-01/")),
-        Nodes.of(children));
+    return doc;
+  }
+
+  private Element createBucketConfiguration(Document doc, CreateBucketConfiguration value) {
+    Element result = doc.createElement("CreateBucketConfiguration");
+
+    result.setAttribute("xmlns", "http://s3.amazonaws.com/doc/2006-03-01/");
+
+    if (value != null && value.locationConstraint() != null) {
+      result.appendChild(
+          XmlHandling.createTextElement(doc, "LocationConstraint", value.locationConstraint()));
+    }
+
+    return result;
+  }
+
+  /**
+   * hook
+   */
+  /* default */ Document newDocument() {
+    return XmlHandling.newDocumentBuilder().newDocument();
   }
 }

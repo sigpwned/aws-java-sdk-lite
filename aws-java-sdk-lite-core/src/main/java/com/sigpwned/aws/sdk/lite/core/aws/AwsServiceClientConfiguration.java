@@ -17,40 +17,32 @@
  * limitations under the License.
  * ==================================LICENSE_END===================================
  */
-package com.sigpwned.aws.sdk.lite.core;
+package com.sigpwned.aws.sdk.lite.core.aws;
 
-public abstract class SdkServiceException extends SdkException {
-  private static final long serialVersionUID = 1089432262818299913L;
+import java.net.URI;
+import com.sigpwned.aws.sdk.lite.core.auth.AwsCredentialsProvider;
+import com.sigpwned.aws.sdk.lite.core.sdk.SdkServiceClientConfiguration;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
-  private int statusCode;
-  private String requestId;
-  private String extendedRequestId;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+@Accessors(fluent = true, chain = true)
+public class AwsServiceClientConfiguration extends SdkServiceClientConfiguration {
+  private AwsCredentialsProvider credentialsProvider;
+  private String region;
 
-  public SdkServiceException(String message) {
-    super(message);
-  }
-
-  public int statusCode() {
-    return statusCode;
-  }
-
-  public void statusCode(int statusCode) {
-    this.statusCode = statusCode;
-  }
-
-  public String requestId() {
-    return requestId;
-  }
-
-  public void requestId(String requestId) {
-    this.requestId = requestId;
-  }
-
-  public String extendedRequestId() {
-    return extendedRequestId;
-  }
-
-  public void extendedRequestId(String extendedRequestId) {
-    this.extendedRequestId = extendedRequestId;
+  @Builder(builderMethodName = "awsBuilder")
+  public AwsServiceClientConfiguration(URI endpointOverride,
+      AwsCredentialsProvider credentialsProvider, String region) {
+    super(endpointOverride);
+    this.credentialsProvider = credentialsProvider;
+    this.region = region;
   }
 }

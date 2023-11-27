@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,34 +17,34 @@
  * limitations under the License.
  * ==================================LICENSE_END===================================
  */
-package com.sigpwned.aws.sdk.lite.core.client;
+package com.sigpwned.aws.sdk.lite.core.aws;
 
 import static java.util.Objects.requireNonNull;
 import java.io.IOException;
-import com.sigpwned.aws.sdk.lite.core.AwsEndpoint;
-import com.sigpwned.aws.sdk.lite.core.SdkClientException;
-import com.sigpwned.aws.sdk.lite.core.credentials.provider.AwsCredentialsProvider;
+import java.net.URI;
+import com.sigpwned.aws.sdk.lite.core.auth.AwsCredentialsProvider;
 import com.sigpwned.aws.sdk.lite.core.http.AwsPropertiesHttpRequestFilter;
 import com.sigpwned.aws.sdk.lite.core.http.AwsSigningHttpRequestInterceptor;
 import com.sigpwned.aws.sdk.lite.core.http.SdkResponseDecoratingBeanHttpResponseFilter;
 import com.sigpwned.aws.sdk.lite.core.http.SigV4AwsSigner;
-import com.sigpwned.aws.sdk.lite.core.util.AwsEndpoints;
+import com.sigpwned.aws.sdk.lite.core.sdk.SdkClientException;
 import com.sigpwned.httpmodel.client.bean.ModelHttpBeanClient;
-import com.sigpwned.httpmodel.core.model.ModelHttpAuthority;
-import com.sigpwned.httpmodel.core.model.ModelHttpHost;
-import com.sigpwned.httpmodel.core.model.ModelHttpUrl;
-import com.sigpwned.httpmodel.core.util.ModelHttpSchemes;
 
-public abstract class AwsClient implements AutoCloseable {
+public abstract class AwsServiceClientBase implements AwsClient {
   private final ModelHttpBeanClient client;
+  private final AwsCredentialsProvider credentialsProvider;
+  private final URI endpointOverride;
   private final String region;
   private final String serviceName;
 
-  protected AwsClient(ModelHttpBeanClient client, AwsCredentialsProvider credentialsProvider,
-      String region, String serviceName) {
+  protected AwsServiceClientBase(ModelHttpBeanClient client,
+      AwsCredentialsProvider credentialsProvider, URI endpointOverride, String region,
+      String serviceName) {
     this.client = requireNonNull(client);
+    this.credentialsProvider = requireNonNull(credentialsProvider);
     this.region = requireNonNull(region);
     this.serviceName = requireNonNull(serviceName);
+    this.endpointOverride = endpointOverride;
 
     getClient().addRequestFilter(new AwsPropertiesHttpRequestFilter(getServiceName(), getRegion()));
     getClient().addBeanResponseFilter(new SdkResponseDecoratingBeanHttpResponseFilter());
@@ -56,22 +56,20 @@ public abstract class AwsClient implements AutoCloseable {
     return client;
   }
 
+  protected AwsCredentialsProvider getCredentialsProvider() {
+    return credentialsProvider;
+  }
+
+  protected URI getEndpointOverride() {
+    return endpointOverride;
+  }
+
   protected String getRegion() {
     return region;
   }
 
   protected String getServiceName() {
     return serviceName;
-  }
-
-  /**
-   * hook
-   */
-  protected ModelHttpUrl baseUrl() {
-    return ModelHttpUrl.builder().scheme(ModelHttpSchemes.HTTPS)
-        .authority(ModelHttpAuthority.of(ModelHttpHost
-            .fromString(AwsEndpoints.toHostname(AwsEndpoint.of(getRegion(), getServiceName())))))
-        .path("").build();
   }
 
   @Override
