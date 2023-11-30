@@ -30,7 +30,6 @@ import com.sigpwned.httpmodel.core.io.InputStreamBufferingStrategy;
 import com.sigpwned.httpmodel.core.model.ModelHttpRequestHead;
 import com.sigpwned.httpmodel.core.model.ModelHttpResponse;
 import com.sigpwned.httpmodel.core.model.ModelHttpResponseHead;
-import com.sigpwned.httpmodel.core.util.ModelHttpMethods;
 import com.sigpwned.httpmodel.core.util.ModelHttpStatusCodes;
 
 /**
@@ -61,7 +60,7 @@ public class ExpiredTokenExceptionMapper implements ModelHttpBeanClientException
   @Override
   public ExpiredTokenException mapException(ModelHttpRequestHead httpRequestHead,
       ModelHttpResponse httpResponse) throws IOException {
-    if (httpRequestHead.getMethod().equalsIgnoreCase(ModelHttpMethods.HEAD)) {
+    if (!httpResponse.hasEntity()) {
       return null;
     }
     if (httpResponse.getStatusCode() == ModelHttpStatusCodes.BAD_REQUEST) {
