@@ -1,4 +1,4 @@
-# aws-java-sdk-lite
+# aws-java-sdk-lite [![tests](https://github.com/sigpwned/aws-java-sdk-lite/actions/workflows/tests.yml/badge.svg)](https://github.com/sigpwned/aws-java-sdk-lite/actions/workflows/tests.yml) [![Maven Central](https://img.shields.io/maven-central/v/com.sigpwned/aws-java-sdk-lite)](https://search.maven.org/artifact/com.sigpwned/aws-java-sdk-lite)
 
 A lighter option of the AWS Java SDK v2 for some services.
 
