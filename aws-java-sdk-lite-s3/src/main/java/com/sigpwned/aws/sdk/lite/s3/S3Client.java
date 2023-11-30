@@ -42,7 +42,11 @@ import com.sigpwned.aws.sdk.lite.s3.model.PutObjectRequest;
 import com.sigpwned.aws.sdk.lite.s3.model.PutObjectResponse;
 
 public interface S3Client extends AwsClient {
-  public static DefaultS3ClientBuilder builder() {
+  public static S3Client create() {
+    return builder().build();
+  }
+
+  public static S3ClientBuilder builder() {
     return new DefaultS3ClientBuilder();
   }
 
