@@ -32,7 +32,27 @@ Provide AWS Client libraries that:
 * Support all endpoints on supported services
 * Total source compatibility
 
-## Results
+## Example Code
+
+### Get S3 Object
+
+The library is designed to be (reasonably) source-compatible with the AWS Java SDK V2. As a result, class names, method names, and so on should be familiar at worst, and fully compatible with existing code (after organizing imports) at best. The following code retrieves an object from S3.
+
+    try (S3Client client = S3Client.create()) {
+      try (ResponseInputStream<GetObjectResponse> in=client.getObject(GetObjectRequest.builder()
+          .bucket("example-bucket-name")
+          .key("example/key/name.txt")
+          .build())) {
+        // Object exists! Handle content and response.
+      }
+      catch(NoSuchKeyException e) {
+        // Object does not exist! Handle error.
+      }
+    }
+
+In this example, credentials are pulled from the environment automatically using a process substantially similar to the official SDK.
+
+## Modules
 
 This library contains the following modules.
 
