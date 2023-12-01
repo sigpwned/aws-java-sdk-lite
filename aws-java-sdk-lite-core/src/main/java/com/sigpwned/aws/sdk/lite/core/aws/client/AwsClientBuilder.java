@@ -21,7 +21,7 @@ package com.sigpwned.aws.sdk.lite.core.aws.client;
 
 import java.net.URI;
 import com.sigpwned.aws.sdk.lite.core.auth.AwsCredentialsProvider;
-import com.sigpwned.aws.sdk.lite.core.auth.credentials.provider.DefaultAwsCredentialsProviderChain;
+import com.sigpwned.aws.sdk.lite.core.auth.credentials.provider.chain.DefaultAwsCredentialsProviderChain;
 import com.sigpwned.aws.sdk.lite.core.sdk.client.SdkClientBuilder;
 import com.sigpwned.aws.sdk.lite.core.util.AwsRegions;
 

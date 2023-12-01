@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import com.sigpwned.aws.sdk.lite.core.Endpoint;
 import com.sigpwned.aws.sdk.lite.core.auth.AwsCredentialsProvider;
-import com.sigpwned.aws.sdk.lite.core.auth.credentials.provider.DefaultAwsCredentialsProviderChain;
+import com.sigpwned.aws.sdk.lite.core.auth.credentials.provider.chain.DefaultAwsCredentialsProviderChain;
 import com.sigpwned.aws.sdk.lite.core.aws.AwsServiceClientBase;
 import com.sigpwned.aws.sdk.lite.core.aws.AwsServiceClientConfiguration;
 import com.sigpwned.aws.sdk.lite.core.io.AbortableInputStream;

@@ -17,20 +17,23 @@
  * limitations under the License.
  * ==================================LICENSE_END===================================
  */
-package com.sigpwned.aws.sdk.lite.core.auth.credentials.provider;
+package com.sigpwned.aws.sdk.lite.core.util;
 
-import java.util.Arrays;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
-/**
- * https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/DefaultAWSCredentialsProviderChain.html
- */
-public class DefaultAwsCredentialsProviderChain extends AwsCredentialsProviderChain {
-  public static final DefaultAwsCredentialsProviderChain getInstance() {
-    return new DefaultAwsCredentialsProviderChain();
-  }
+public final class ByteStreams {
+  private ByteStreams() {}
 
-  public DefaultAwsCredentialsProviderChain() {
-    super(Arrays.asList(new EnvironmentVariableCredentialsProvider(),
-        new SystemPropertiesCredentialsProvider()));
+  public static byte[] toByteArray(InputStream in) throws IOException {
+    ByteArrayOutputStream result = new ByteArrayOutputStream();
+
+    byte[] buf = new byte[16384];
+    for (int nread = in.read(buf); nread != -1; nread = in.read(buf)) {
+      result.write(buf, 0, nread);
+    }
+
+    return result.toByteArray();
   }
 }
